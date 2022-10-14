@@ -1,6 +1,6 @@
 ## About repository
 Repository contains solutions to assignments to course `Formal Languages and Translation Theory` studied at `Wroclaw University of Science and Technology`.   
-Course is conducted by Dr Gębala.  
+Course is conducted by [Dr Maciej Gebala](https://cs.pwr.edu.pl/gebala/).  
 ## What is inside repository?
 ### Laboratories
 These are assignment lists to provide coding algorithms that meet certain requirements.
