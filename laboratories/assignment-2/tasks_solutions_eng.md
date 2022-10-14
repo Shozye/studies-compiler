@@ -14,10 +14,19 @@ After executing the program with `--leave-docs` it shouldn't remove documentatio
 ### Note: 
 `Documentation comments` are the ones which start on `/**` or `/*!` or `///` or `//!`.
 ## Exercise 4
-By using `Flex`, implement simple postfix calculator (reverse polish notation) to integers. Calculator should implement operations like + (addition), - (substraction), * (multiplication), / (integer division), ^ (exponentation), % (modulo)  
-Input: Expression should be written in one line. Outpit: Program should display evaluated value of expression or communicate about exception.  
+By using `Flex`, implement simple postfix calculator (reverse polish notation) to integers. Calculator should implement operations like: 
+1. \+ (addition) 
+2. \- (substraction)
+3. \* (multiplication)
+4. / (integer division)
+5. ^ (exponentation)
+6. % (modulo)  
+
+`Input`: Expression should be written in one line.   
+`Output`: Program should display evaluated value of expression or communicate about exception.  
 Example:
 ```
+./Calculator
  2 3+4*
 = 20
 1 2 3 4 + * -
