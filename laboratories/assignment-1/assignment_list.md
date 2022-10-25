@@ -3,11 +3,11 @@ Analyse and implement algorithms of pattern searching by using Finite Automata A
 
 Executions of programs should look like this
 ```bash
-./FA <pattern> <filename>
+python ./FA <pattern> <filename>
 ```
 and
 ```bash
-./KMP <pattern> <filename>
+python ./KMP <pattern> <filename>
 ```
 ## Solution.
 You can compile code and run like specified above
