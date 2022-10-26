@@ -41,8 +41,7 @@ def kmp(text: str, pattern: str) -> list:
     return answers
     
     
-    
-    
+
 
 def main():
     if len(sys.argv) < 3:

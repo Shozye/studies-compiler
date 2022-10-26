@@ -27,7 +27,6 @@ class DFA:
         self.state = -1
         self.end_state = len(pattern)-1
         self.delta = self.calculate_delta(pattern)
-        print(self.delta)
         
     def calculate_delta(self, pattern: str):
         alphabet = list(set(pattern))
@@ -37,14 +36,10 @@ class DFA:
             for letter in list(set(pattern)):
                 if pattern[state + 1] == letter:
                     delta[state, letter] = state+1
+                elif state + 1 == 0:
+                    delta[state, letter] = -1
                 else:
-                    checked_state = state
-                    while checked_state > 0 and pattern[checked_state] != letter:
-                        checked_state = LPS[checked_state] - 1
-                        if pattern[checked_state+1] == letter:
-                            delta[state, letter] = checked_state+1
-                    if delta.get((state, letter)) is None:
-                        delta[state, letter] = -1
+                    delta[state, letter] = delta[LPS[state]-1, letter]
                         
         # now i have to calculate for state == end_state
         for letter in alphabet:
@@ -57,7 +52,7 @@ class DFA:
     def parse_letter(self, letter: str):
         self.state = self.delta.get((self.state, letter), -1)
         
-def match(text, pattern):
+def fa(text, pattern):
     answers = []
     dfa = DFA(pattern)
     for i, c in enumerate(text):
@@ -74,7 +69,7 @@ def main():
     filename = sys.argv[2]
     with open(filename, encoding='utf-8') as file:
         text = file.read()
-    print(match(text, pattern))
+    print(fa(text, pattern))
     
     
 if __name__ == "__main__":
