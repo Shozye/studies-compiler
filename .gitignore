@@ -3,3 +3,5 @@
 **/__pycache__
 **/flex
 **/examples/*
+**/ex.c
+**/ex.out

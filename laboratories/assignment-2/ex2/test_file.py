@@ -1,15 +1,16 @@
+"""This file is used to test deleting comments
+Every Comment is started by 'COMMENT' and every string is either
+docstring or is inside print statement"""
+
 import json # here i am importing something
 # here is empty line
 class Solution:
-    """Class used to provide solution"""
+    """Class used to provide solution to some problem"""
     def __init__(self):
-        """I am constructor"""
         i = 1 # here i am doing something
-
+    # COMMENT
 if __name__ == "__main__":
-    print("This is something interesting")
-    print("I am # inside of a text")
+    print('Different quotes!') # comment
+    print("I am # inside of a text") #comment ' ' # "" """"""
     print("""I am 
-          # inside of 
-          # multiline 
-          text""")
+        #text""") # comment this is comment #$$$^@#&#ąðæœ
