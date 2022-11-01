@@ -3,7 +3,7 @@
 Write program in `Flex` which
 1. Reads any text file
 2. Deletes all whitespaces in the beginning and in the end of a line
-3. Replaces all occurrences of `tab`-chains and `space`-chains to exactly one `space`
+3. Replaces all occurrences of space and tab in a row to exactly one `space`
 4. Deletes empty lines
 5. Appends to the end of the file amount of lines and words in the file. These should be separated by white space.
 ## Exercise 2
