@@ -1,1 +1,1 @@
-2 0 /
+Error: Right side of division cannot be 0
