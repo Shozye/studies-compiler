@@ -1,56 +1,35 @@
 %{
-#include<stdbool.h>
-bool inside_string = false; 
-bool inside_comment = false;
-int border_type = 0;
 %}
+
+%x IN_STRING_0
+%x IN_STRING_1
+%x IN_STRING_2
+%x COMMENT
 %%
-\"\"\" {
-    if (!inside_comment) {
-        printf("%s", yytext);
-        if(inside_string && border_type == 0){
-            inside_string = false;
-        } else if (!inside_string){
-            border_type = 0;
-            inside_string = true;
-        }
-    }
-}
-\" {
-    if (!inside_comment) {
-        printf("%s", yytext);
-        if(inside_string && border_type == 1){
-            inside_string = false;
-        } else if (!inside_string){
-            border_type = 1;
-            inside_string = true;
-        }
-    }
-}
-\' {
-    if (!inside_comment) {
-        printf("%s", yytext);
-        if(inside_string && border_type == 2){
-            inside_string = false;
-        } else if (!inside_string){
-            border_type = 2;
-            inside_string = true;
-        }
-    }
-}
-\# {if(inside_string){
-    printf("%s", yytext);
-} else {
-    inside_comment = true;
-}}
 
-. {if(!inside_comment){
-    printf("%s", yytext);
-}}
+#           {BEGIN(COMMENT);}
+'           {ECHO;BEGIN(IN_STRING_0);}
+\"          {ECHO;BEGIN(IN_STRING_1);}
+\"\"\"      {ECHO;BEGIN(IN_STRING_2);}
 
-\n {
-    printf("\n");
-    inside_comment = false;
+<COMMENT>{
+    "\n"        {BEGIN(INITIAL);ECHO;}
+    .           
+}
+
+<IN_STRING_0>{
+    \\"'"       {ECHO;}
+    "'"         {ECHO;BEGIN(INITIAL);}
+}
+
+<IN_STRING_1>{
+    \\"\""      {ECHO;}
+    "\""        {ECHO;BEGIN(INITIAL);}
+}
+
+<IN_STRING_2>{
+    \\"\"\"\""  {ECHO;}
+    "\"\"\""    {ECHO;BEGIN(INITIAL);}
 }
 
 %%
