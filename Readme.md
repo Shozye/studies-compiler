@@ -7,7 +7,7 @@ These are assignment lists to provide coding algorithms that meet certain requir
 Laboratories end with `Compiler` project.  
 Currently there is:
 #### Assignment 1: Implementing KMP and Finite Automate Algorithms 
-#### Assignment 2: Working with FLEX
+#### Assignment 2: Working with Flex, Postfix Calculator using Flex
 #### Assignment 3:
 #### Assignment 4:
 #### Assignment 5:

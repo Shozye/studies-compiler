@@ -2,7 +2,7 @@
     #define STACK_SIZE 100000
     int error = 0;
     void report_error(char* text){
-        printf("%s", text);
+        printf("Error: %s\n", text);
         error = 1;
     }
     // STACK RELATED FUNCTIONS START
@@ -13,13 +13,13 @@
         if(ptr < STACK_SIZE-1){
             ptr++;
         } else {
-            report_error("Error: Too many numbers in stack!\n");
+            report_error("Too many numbers in stack!");
         }
     }
     int get(){
         ptr--;
         if(ptr < 0){
-            report_error("Error: Not enough numbers provided\n");
+            report_error("Not enough numbers provided");
             return 0;
         }
         return stack[ptr];
@@ -51,7 +51,7 @@
     void _div(){
         get_args(); if(error){return;};
         if(right == 0){
-            report_error("Error: Right side of division cannot be 0\n");
+            report_error("Right side of division cannot be 0");
             return;
         }
         push(left / right);
@@ -59,7 +59,7 @@
     void _exp(){
         get_args(); if(error){return;};
         if(right < 0){
-            report_error("Error: Right side of exponent cannot be negative\n");
+            report_error("Right side of exponent cannot be negative");
             return;
         }
         int result = 1;
@@ -71,7 +71,7 @@
     void _mod(){
         get_args(); if(error){return;};
         if(right == 0){
-            report_error("Error: Right side of modulo cannot be 0\n");
+            report_error("Right side of modulo cannot be 0");
             return;
         }
         push(left % right);
@@ -80,9 +80,9 @@
     void print_result(){
         if(ptr != 1){
             if(ptr < 1){
-                report_error("Error: No numbers given. Can't print result\n");
+                report_error("No numbers given. Can't print result");
             } else {
-                report_error("Error: Not enough operands\n");
+                report_error("Not enough operands");
             }
             return;
         }
@@ -105,15 +105,15 @@ NUMBER  "-"*[0-9]+
 \% { _mod(); if(error){BEGIN(OMIT);}; };
 \n { print_result(); restore(); };
 [^ 0123456789\+\-\*\/\^\%\n]  {
-    char msg[30] = "Error: Wrong symbol: ";
+    char msg[30] = "Wrong symbol: ";
     strcat(msg, yytext);
     report_error(msg); 
-    if(error){ BEGIN(OMIT);};
+    BEGIN(OMIT);
 }
 
 <OMIT>{
     .
-    \n {BEGIN(INITIAL);}
+    \n {BEGIN(INITIAL); restore();}
 }
 
 %%
