@@ -70,7 +70,7 @@ number:
 powexpr:
     pownumber { $$ = $1; notation += std::to_string($1) + " "; }
     | LBR powexpr RBR { $$ = $2; }
-    | SUB LBR expr RBR %prec NEG { $$ = _neg(-$3, P-1); notation += "- "; }
+    | SUB LBR powexpr RBR %prec NEG { $$ = _neg(-$3, P-1); notation += "- "; }
     | powexpr ADD powexpr { $$ = _add($1, $3, P-1); notation += "+ "; }
     | powexpr SUB powexpr { $$ = _sub($1, $3, P-1); notation += "- "; }
     | powexpr MUL powexpr { $$ = _mul($1, $3, P-1); notation += "* "; }
