@@ -1,5 +1,8 @@
 from lexer import CalcLexer
 from sly import Parser
+from utils import *
+
+P = 1234577
 
 class CalcParser(Parser):
     tokens = CalcLexer.tokens
@@ -7,62 +10,44 @@ class CalcParser(Parser):
     precedence = (
         ('left', ADD, SUB),
         ('left', MUL, DIV),
-        ('left', NEG),
+        ('right', UMINUS),
         ('nonassoc', POW)
         )
 
     def __init__(self):
         self.notation = ""
 
-    @_('statement line')
+    @_('line statement')
     def statement(self, p):
         pass
+
     @_('')
     def statement(self, p):
         pass
     
     @_('expr NEWLINE')
     def line(self, p):
-        print(f"Notation: {self.notation}\nResult: {p.expr0}")
+        print(f"Notation: {self.notation}\nResult: {p.expr}")
+        self.notation=""
+
+    @_('NEWLINE')
+    def line(self, p):
+        pass
+
+    @_('number')
+    def expr(self, p):
+        self.notation += str(p.number)
+        return p.number
 
     @_('NUM')
-    def expr(self, p):
-        self.notation
-        return p.NUM
+    def number(self, p):
+        return p.NUM % P
+    
+    @_('SUB number %prec UMINUS')
+    def number(self, p):
+        return neg(-p.number)
+    
 
-    @_('expr "+" expr')
-    def expr(self, p):
-        return p.expr0 + p.expr1
+    
 
-    @_('expr "-" expr')
-    def expr(self, p):
-        return p.expr0 - p.expr1
 
-    @_('expr "*" expr')
-    def expr(self, p):
-        return p.expr0 * p.expr1
-
-    @_('expr "/" expr')
-    def expr(self, p):
-        return p.expr0 / p.expr1
-
-    @_('"-" expr %prec UMINUS')
-    def expr(self, p):
-        return -p.expr
-
-    @_('"(" expr ")"')
-    def expr(self, p):
-        return p.expr
-
-    @_('NUMBER')
-    def expr(self, p):
-        return p.NUMBER
-
-    @_('NAME')
-    def expr(self, p):
-        try:
-            return self.names[p.NAME]
-        except LookupError:
-            print("Undefined name '%s'" % p.NAME)
-            return 0
-        

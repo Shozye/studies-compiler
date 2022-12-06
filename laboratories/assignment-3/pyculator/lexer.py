@@ -6,6 +6,7 @@ class CalcLexer(Lexer):
     ignore_comment = r'^\#(.|\\\n)*\n'
     ignore_backslashed_newline = r'\\\n'
     literals = { '+', '-', '*', '/', '^', '(', ')' }
+
     NEWLINE = r'\n'
     NUM = r'\d+'
     LBR = r'\('
@@ -14,7 +15,7 @@ class CalcLexer(Lexer):
     SUB = r'-'
     MUL = r'\*'
     DIV = r'/'
-    POW = r'^'
+    POW = r'\^'
     ERR = r'.'
 
     def NUM(self, t):
@@ -24,4 +25,23 @@ class CalcLexer(Lexer):
     def error(self, t):
         print("Illegal character '%s'" % t.value[0])
         self.index += 1
-        
+
+def main():
+    lexer = CalcLexer()
+    while True:
+        try:
+            result_text = ""
+            text = input('')
+            while text[-1] == "\\":
+                result_text += text[:-1]
+                text = input('')
+            result_text += text + "\n"
+        except EOFError:
+            break
+        else:
+            for token in lexer.tokenize(result_text):
+                print(token)
+                
+
+if __name__ == '__main__':
+    main()
