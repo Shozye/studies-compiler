@@ -150,7 +150,7 @@ class CalcParser(Parser):
 
     @_('SUB pownumber %prec UMINUS')
     def pownumber(self, p):
-        return neg(-p.number, P-1)   
+        return neg(-p.pownumber, P-1)   
 
     
 
