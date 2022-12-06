@@ -32,7 +32,7 @@ def main():
         try:
             result_text = ""
             text = input('')
-            while text[-1] == "\\":
+            while len(text) > 0 and text[-1] == "\\":
                 result_text += text[:-1]
                 text = input('')
             result_text += text + "\n"
@@ -41,7 +41,7 @@ def main():
         else:
             for token in lexer.tokenize(result_text):
                 print(token)
-                
+
 
 if __name__ == '__main__':
     main()
