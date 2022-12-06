@@ -17,11 +17,18 @@ int _mul(int a, int b, int P){
     return (int)((long long)a*b % P);
 }
 
-int _div(int a, int b, int P){
+int inverse(int a, int P){
     for(int i = 0; i < P; i++){
-        if(_mul(b, i, P) == a){return i;}
+        if(_mul(a, i, P) == 1){return i;}
     }
     return -1;
+}
+
+int _div(int a, int b, int P){
+    if (b == 0){return -1;}
+    int inv = inverse(b, P);
+    if (inv == -1){return -1;}
+    return _mul(a, inv, P);
 }
 int _pow(int a, int pow, int P){
     if (pow == 0)

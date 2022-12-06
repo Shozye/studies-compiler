@@ -42,6 +42,9 @@ line:
       std::cout << "Result: " << $1 << std::endl;
       notation = "";
     }
+    | error '\n' { 
+      yyerrok ;
+    }
 ;
 expr: 
     number { $$ = $1; notation += std::to_string($1) + " "; }
@@ -53,8 +56,8 @@ expr:
     | expr DIV expr {
       int res = _div($1, $3, P);
       if (res == -1){
+        yyerror("blad");
         YYERROR;
-        notation += "/ "; 
       } else {
         $$ = res; 
         notation += "/ ";
@@ -77,8 +80,8 @@ powexpr:
     | powexpr DIV powexpr { 
       int res = _div($1, $3, P-1);
       if (res == -1){
+        yyerror("blad"); 
         YYERROR;
-        notation += "/ "; 
       } else {
         $$ = res; 
         notation += "/ ";
@@ -93,7 +96,6 @@ pownumber:
 
 void yyerror(std::string s){
   std::cout << "Błąd" << std::endl;
-  return;
 }
 int main(){
   yyparse();
