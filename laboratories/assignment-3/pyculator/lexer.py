@@ -16,7 +16,7 @@ class CalcLexer(Lexer):
     MUL = r'\*'
     DIV = r'/'
     POW = r'\^'
-    ERR = r'.'
+    ERR = '.+'
 
     def NUM(self, t):
         t.value = int(t.value)
