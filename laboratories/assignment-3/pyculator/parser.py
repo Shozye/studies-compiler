@@ -60,6 +60,10 @@ class CalcParser(Parser):
     def expr(self, p):
         return p.expr
 
+    @_('SUB LBR expr RBR %prec UMINUS')
+    def expr(self, p):
+        return neg(p.expr)
+
     @_('expr ADD expr')
     def expr(self, p):
         self.notation += "+ "
@@ -100,6 +104,10 @@ class CalcParser(Parser):
     @_('LBR powexpr RBR')
     def powexpr(self, p):
         return p.powexpr
+
+    @_('SUB LBR powexpr RBR %prec UMINUS')
+    def powexpr(self, p):
+        return neg(p.powexpr, P-1)
 
     @_('powexpr ADD powexpr')
     def powexpr(self, p):
