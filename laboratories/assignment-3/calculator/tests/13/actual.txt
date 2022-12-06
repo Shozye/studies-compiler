@@ -1,2 +1,2 @@
-Notation: 2 - 1234575 ^ 2 1 ^ * 
+Notation: 2 1234575 ^ 2 1 ^ * 
 Result: 1

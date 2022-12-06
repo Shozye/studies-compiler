@@ -65,7 +65,7 @@ expr:
 
 number: 
     NUM { $$ = $1 % P; }
-    | SUB NUM %prec NEG { $$ = _neg(-$2, P); notation += "- "; }
+    | SUB NUM %prec NEG { $$ = _neg(-$2, P); }
 
 powexpr:
     pownumber { $$ = $1; notation += std::to_string($1) + " "; }
@@ -87,7 +87,7 @@ powexpr:
 
 pownumber: 
     NUM { $$ = $1 % (P-1); }
-    | SUB NUM %prec NEG { $$ = _neg(-$2, P-1); notation += "- "; }
+    | SUB NUM %prec NEG { $$ = _neg(-$2, P-1); }
 
 %%
 

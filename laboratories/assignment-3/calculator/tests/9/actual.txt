@@ -1,2 +1,2 @@
-Notation: - 10 
+Notation: 10 
 Result: 10
