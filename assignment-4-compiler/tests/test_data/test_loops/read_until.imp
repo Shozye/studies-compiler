@@ -1,0 +1,9 @@
+[ Write three sides of a triangle and check if it is pythagorean ]
+PROGRAM IS
+VAR check_num, a
+BEGIN
+    READ check_num
+    REPEAT
+        READ a;
+    UNTIL a > check_num;
+END

@@ -1,0 +1,33 @@
+[Rozkład na czynniki pierwsze]
+PROCEDURE check(n,d,p) IS
+VAR r
+BEGIN
+    p:=0;
+    r:=n%d;
+    WHILE r=0 DO
+        n:=n/d;
+        p:=p+1;
+        r:=n%d;
+    ENDWHILE
+END
+
+PROGRAM IS
+VAR n,m,potega,dzielnik
+BEGIN
+    READ n;
+    dzielnik:=2;
+    m:=dzielnik*dzielnik;
+    WHILE n>=m DO
+        check(n,dzielnik,potega);
+        IF potega>0 THEN [jest podzielna przez dzielnik]
+            WRITE dzielnik;
+            WRITE potega;
+        ENDIF
+        dzielnik:=dzielnik+1;
+        m:=dzielnik*dzielnik;
+    ENDWHILE
+    IF n!=1 THEN [ostatni dzielnik różny od 1]
+        WRITE n;
+        WRITE 1;
+    ENDIF
+END
