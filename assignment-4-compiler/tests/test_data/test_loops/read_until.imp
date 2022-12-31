@@ -1,4 +1,4 @@
-[ Write three sides of a triangle and check if it is pythagorean ]
+[ Program that reads numbers until read number bigger than the first one ]
 PROGRAM IS
 VAR check_num, a
 BEGIN

@@ -1,6 +1,7 @@
-[ Program writes 1 if number provided is prime. 0 otherwise. ]
+[ Program has syntax error in condition - condition cannot be a expression
+ Also there is no ENDIF in line 16 ]
 PROGRAM IS
-VAR num, i, powi, is_prime, expr
+VAR num, i, powi, is_prime
 BEGIN
 
     READ num;
@@ -9,11 +10,9 @@ BEGIN
     powi := i*i;
     is_prime := 1;
     WHILE powi <= num DO
-        expr := num % i;
-        IF expr = 0 THEN
+        IF num % i = 0 THEN
             is_prime := 0;
             i := num;
-        ENDIF
         i := i + 1;
         powi := i*i;
     ENDWHILE
@@ -23,4 +22,5 @@ BEGIN
     ELSE
         WRITE 0;
     ENDIF
+
 END
