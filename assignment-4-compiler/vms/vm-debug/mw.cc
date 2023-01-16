@@ -44,25 +44,25 @@ void run_machine( vector< pair<int,long long> > & program )
      }
      switch( program[lr].first )
      {
-      case GET:	   cout << "? ";    cin >> p[program[lr].second];                        io+=100; lr++; break;
-      case PUT:	   cout << "> " << p[program[lr].second] << endl;                        io+=100; lr++; break;
+      case GET:	   cout << "? ";    cin >> p[program[lr].second];                        io+=100; lr++; cout << "GET " << p[program[lr].second] << endl;  break;
+      case PUT:	   cout << "> " << p[program[lr].second] << endl;                        io+=100; lr++; cout << "PUT " << p[program[lr].second] << endl; break;
 
-      case LOAD:	 p[0]                     = p[program[lr].second];                     mem+=10; lr++; break;
-      case STORE:	 p[program[lr].second]    = p[0];                                      mem+=10; lr++; break;
-      case LOADI:	 p[0]                     = p[p[program[lr].second]];                  mem+=10; lr++; break;
-      case STOREI: p[p[program[lr].second]] = p[0];                                      mem+=10; lr++; break;
+      case LOAD:	 p[0]                     = p[program[lr].second];                     mem+=10; lr++; cout << "LOAD " << p[program[lr].second] << endl; break;
+      case STORE:	 p[program[lr].second]    = p[0];                                      mem+=10; lr++; cout << "STORE " << p[program[lr].second] << endl; break;
+      case LOADI:	 p[0]                     = p[p[program[lr].second]];                  mem+=10; lr++; cout << "LOADI " << p[program[lr].second] << endl; break;
+      case STOREI: p[p[program[lr].second]] = p[0];                                      mem+=10; lr++; cout << "STOREI " << p[program[lr].second] << endl; break;
 
-      case ADD:	   p[0] += p[program[lr].second];                                        ari+=10; lr++; break;
-      case SUB:	   p[0] -= p[0]>=p[program[lr].second]?p[program[lr].second]:p[0];       ari+=10; lr++; break;
-      case ADDI:   p[0] += p[p[program[lr].second]];                                     ari+=10; lr++; break;
-      case SUBI:   p[0] -= p[0]>=p[p[program[lr].second]]?p[p[program[lr].second]]:p[0]; ari+=10; lr++; break;
-      case SET:	   p[0]  = program[lr].second;                                           ari+=10; lr++; break;
-      case HALF:	 p[0] /= 2;                                                            ari+= 5; lr++; break;
+      case ADD:	   p[0] += p[program[lr].second];                                        ari+=10; lr++; cout << "ADD " << p[program[lr].second] << endl; break;
+      case SUB:	   p[0] -= p[0]>=p[program[lr].second]?p[program[lr].second]:p[0];       ari+=10; lr++; cout << "SUB " << p[program[lr].second] << endl; break;
+      case ADDI:   p[0] += p[p[program[lr].second]];                                     ari+=10; lr++; cout << "ADDI " << p[program[lr].second] << endl; break;
+      case SUBI:   p[0] -= p[0]>=p[p[program[lr].second]]?p[p[program[lr].second]]:p[0]; ari+=10; lr++; cout << "SUBI " << p[program[lr].second] << endl; break;
+      case SET:	   p[0]  = program[lr].second;                                           ari+=10; lr++; cout << "SET " << p[program[lr].second] << endl; break;
+      case HALF:	 p[0] /= 2;                                                            ari+= 5; lr++; cout << "HALF " << endl; break;
 
-      case JUMP: 	              lr = program[lr].second;                                 jump+=1; break;
-      case JPOS:	if( p[0]>0 )  lr = program[lr].second; else lr++;                      jump+=1; break;
-      case JZERO:	if( p[0]==0 ) lr = program[lr].second; else lr++;                      jump+=1; break;
-      case JUMPI: 	            lr = p[program[lr].second];                              jump+=1; break;
+      case JUMP: 	              lr = program[lr].second;                                 jump+=1; cout << "JUMP " << p[program[lr].second] << endl; break;
+      case JPOS:	if( p[0]>0 )  lr = program[lr].second; else lr++;                      jump+=1; cout << "JPOS " << p[program[lr].second] << endl; break;
+      case JZERO:	if( p[0]==0 ) lr = program[lr].second; else lr++;                      jump+=1; cout << "JZERO " << p[program[lr].second] << endl; break;
+      case JUMPI: 	            lr = p[program[lr].second];                              jump+=1; cout << "JUMPI " << p[program[lr].second] << endl; break;
       default: break;
     }
     if( lr<0 || lr>=(int)program.size() )

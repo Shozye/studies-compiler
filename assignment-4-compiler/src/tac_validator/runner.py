@@ -1,8 +1,6 @@
-from .tac_lexer import TACLexer
-from .tac_parser import TACPaxer
+from ..tac_models.models import Quadruple
+from .validator import Validator
 
 
-def run_lexer(text: str):
-    lexer = TACLexer()
-    parser = TACParser()
-
+def validate(tac: dict[str, list[Quadruple]]):
+    Validator().run(tac)

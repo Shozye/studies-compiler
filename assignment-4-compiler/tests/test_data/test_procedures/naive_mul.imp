@@ -1,7 +1,13 @@
 [ Program Reads and multiplies two numbers ]
+
 PROCEDURE decrement(a) IS
 BEGIN
     a := a - 1;
+END
+
+PROCEDURE increment(a) IS
+BEGIN
+    a:= a + 1;
 END
 
 PROCEDURE mul(a, b, p) IS

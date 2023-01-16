@@ -4,3 +4,5 @@
 **/vm
 **/vm-cln
 **/venv/
+**/test_runs/*
+**/output/*

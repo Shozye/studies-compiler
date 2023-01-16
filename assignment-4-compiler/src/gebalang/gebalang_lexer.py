@@ -42,4 +42,4 @@ class GebalangLexer(Lexer):
 
     def error(self, t):
         print('Line %d: Bad character %r' % (self.lineno, t.value[0]))
-        raise Exception("xd")
+        raise Exception("Bad Character")
