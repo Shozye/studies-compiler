@@ -1,0 +1,51 @@
+mul(a, b, p)
+    p := 0;
+
+    while b > 0
+
+        if b is odd
+            p := p + a;
+        a := a + a;
+
+        b := b / 2
+
+    endwhile
+
+Zacznijmy od tego ze zmienne a i b będą storowane w odpowiednich miejscach, zatem bedziemy dzialac na wartosciach,
+nie na referencjach. C bedzie referencją!!!. Zakladamy tez ze mamy dostep do $ret ktore ma miejsce powrotu!
+Wtedy mul bedzie wygladal jakos tak:
+
+    SET 0
+    LOADI p
+
+E_warunek: LOAD b
+    JZERO E_1 [ jeżeli nie spelniamy warunk ito skacz do jumpi $ret ]
+E_while_body:
+
+        LOAD b  [ Ten load moge usunac bo z kazdego miejsca ktore tutaj dochdozi mam b w P0 ]
+        HALF
+        STORE *SAVED_1*
+        ADD *SAVED_1*
+        STORE *SAVED_1*  [ w tym fragmencie podzielilismy wykonalismy (b / 2)*2. jeżeli b jest nieparzyste to jest to mniejsze od b
+
+        LOAD b
+        SUB *SAVED_1*
+        JZERO  E_endif   [ Jeżeli są rowne to znaczy ze b bylo parzyste ]
+
+        LOADI p
+        ADD a
+        STOREI p
+
+
+E_endif: LOAD a
+         ADD a
+         STORE a
+         LOAD b
+         HALF
+         STORE b
+
+
+        LOAD b                   [ ten LOAD moge usunac bo wczesniej store'uje b ]
+        JPOS E_while_body        [ jezeli b > 0 to wroc do body ]
+
+E_endwhile: JUMPI $ret

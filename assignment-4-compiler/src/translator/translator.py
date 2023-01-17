@@ -5,15 +5,12 @@ from typing import Any
 
 from .Flags import Flag
 from .commands import SET, STORE, Command
+from .constant_functions import get_multiply_information
 from .procedure import ProcedureTranslator, VariableInfo, ProcedureInformation
 from ..tac_models.models import Quadruple
 
 
-def reverse_dict(to_reverse: dict[str, ProcedureInformation]) -> dict[str, ProcedureInformation]:
-    reversed_dict = dict()
-    for proc, info in list(to_reverse.items())[::-1]:
-        reversed_dict[proc] = info
-    return reversed_dict
+
 
 
 class Translator:
@@ -40,6 +37,7 @@ class Translator:
             procedure_translator.run(proc_tac)
             self.translated_procedures[proc] = procedure_translator.info
             self.flags.update(procedure_translator.info.flags)
+        pprint(self.translated_procedures)
         self.set_global_symbols()
         self._join_all_procedures()
         self._translate_labels()
@@ -57,7 +55,7 @@ class Translator:
             self.fully_translated_tac.append(cmd)
 
     def update_symbols(self, procedure: str, symbols: dict[str, VariableInfo]):
-        for name, info in symbols.items():
+        for name in symbols:
             self.symbols[procedure][name] = self.get_free_index()
 
     def update_translated_tac(self, info: ProcedureInformation):
@@ -76,7 +74,11 @@ class Translator:
             self.translated_tac.append(copied)
 
     def _join_all_procedures(self):
-        self.translated_procedures = reverse_dict(self.translated_procedures)
+        new_translated_procedures = {"PROG": self.translated_procedures["PROG"]}
+        for procname, info in self.translated_procedures.items():
+            if procname != "PROG":
+                new_translated_procedures[procname] = info
+        self.translated_procedures = new_translated_procedures
         for name, info in self.translated_procedures.items():
             self.update_symbols(name, info.symbols)
         for info in self.translated_procedures.values():
@@ -97,6 +99,6 @@ class Translator:
         if Flag.div in self.flags:
             pass
         if Flag.mul in self.flags:
-            pass
+            self.translated_procedures["!mul"] = get_multiply_information()
         if Flag.mod in self.flags:
             pass
