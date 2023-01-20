@@ -1,0 +1,94 @@
+GET a
+GET b
+a_copy = a
+p := 0
+if b == 0:
+    while a_copy >= b
+        temp := 1 [ E_WHILE_BODY ]
+        b_copy := b
+        while a_copy >= b_copy
+            temp *= 2 [ E_INNER_WHILE_BODY ]
+            b_copy *= 2
+        end
+        b_copy /= 2 [ E_INNER_ENDWHILE ]
+        temp /= 2
+        p := p + temp
+        a_copy := a_copy - b_copy
+    end
+PUT p [E_ENDWHILE ]
+
+Kod trójadresowy
+GET a
+GET b
+a_copy := a
+p := 0
+IF b == 0 GOTO E_ENDWHILE
+IF a_copy < b GOTO E_ENDWHILE
+temp := 1 [ E_WHILE_BODY ]
+b_copy := b
+IF b_copy - a_copy > 0 GOTO E_INNER_ENDWHILE
+temp *= 2 [ E_INNER_WHILE_BODY ]
+b_copy *= 2
+IF b_copy - a_copy = 0 GOTO E_INNER_WHILE_BODY
+b_copy /= 2 [ E_INNER_ENDWHILE ]
+temp /= 2
+p := p + temp
+a_copy := a_copy - b_copy
+IF a_copy >= b GOTO E_WHILE_BODY
+PUT p [E_ENDWHILE ]
+
+Kod z etykietami i zmiennymi :
+[ Pamiec:
+ 0 | zajety na dzialania
+ 1 | nieuzywane lol
+ 2 | a
+ 3 | b
+ 4 | p
+ 5 | a_copy
+ 6 | b_copy
+ 7 | temp
+ Etykiety: E_WHILE_BODY, E_INNER_WHILE_BODY, E_INNER_ENDWHILE, E_ENDWHILE ]
+
+GET a [ Wczytanie zmiennych ]
+GET b
+LOAD a [ a_copy := a ]
+STORE a_copy
+SET 0 [ p := 0 ]
+STORE p
+LOAD b [ IF b == 0 GOTO E_ENDWHILE ] [ IF a_copy < b GOTO E_ENDWHILE ]
+JZERO E_ENDWHILE
+SUB a_copy
+JPOS E_ENDWHILE
+SET 1 [ temp := 1 ] [ E_WHILE_BODY ]
+STORE temp
+LOAD b [ b_copy := b ]
+STORE b_copy
+SUB a_copy
+JPOS E_INNER_ENDWHILE [ IF b_copy - a_copy > 0 GOTO E_INNER_ENDWHILE ]
+LOAD temp [ temp *= 2 ] [ E_INNER_WHILE_BODY ]
+ADD 0
+STORE temp
+LOAD b_copy [ b_copy *= 2 ]
+ADD 0
+STORE b_copy
+SUB a_copy [ IF b_copy - a_copy = 0 GOTO E_INNER_WHILE_BODY ]
+JZERO E_INNER_WHILE_BODY
+LOAD b_copy [ b_copy /= 2 ] [ E_INNER_ENDWHILE ]
+HALF
+STORE b_copy
+LOAD temp [ temp /= 2 ] [ p := p + temp ]
+HALF
+STORE temp
+ADD p
+STORE p
+LOAD a_copy [ a_copy := a_copy - b_copy ]
+SUB b_copy
+STORE a_copy
+LOAD b [ IF a_copy >= b GOTO E_WHILE_BODY ]
+SUB a_copy
+JZERO E_WHILE_BODY
+PUT p [E_ENDWHILE ]
+HALT
+
+
+
