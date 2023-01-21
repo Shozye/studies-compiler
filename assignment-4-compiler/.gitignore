@@ -6,3 +6,6 @@
 **/venv/
 **/test_runs/*
 **/output/*
+**/lexer.cc
+**/parser.cc
+**/parser.hh
