@@ -1,7 +1,6 @@
 GET a
 GET b
 a_copy = a
-p := 0
 if b == 0:
     while a_copy >= b
         b_copy := b [ E_WHILE_BODY ]
@@ -11,14 +10,14 @@ if b == 0:
         b_copy /= 2 [ E_INNER_ENDWHILE ]
         a_copy := a_copy - b_copy
     end
-    p := a_copy
-PUT p [E_ENDWHILE ]
+end
+p := a_copy [E_ENDWHILE ]
+PUT p
 
 Kod trójadresowy
 GET a
 GET b
 a_copy := a
-p := 0
 IF b == 0 GOTO E_ENDWHILE
 IF a_copy < b GOTO E_ENDWHILE
 b_copy := b [ E_WHILE_BODY ]
@@ -28,8 +27,8 @@ IF b_copy - a_copy = 0 GOTO E_INNER_WHILE_BODY
 b_copy /= 2 [ E_INNER_ENDWHILE ]
 a_copy := a_copy - b_copy
 IF a_copy >= b GOTO E_WHILE_BODY
-p := a_copy
-PUT p [E_ENDWHILE ]
+p := a_copy [E_ENDWHILE ]
+PUT p
 
 Kod z etykietami i zmiennymi :
 [ Pamiec:
@@ -46,8 +45,6 @@ GET a [ Wczytanie zmiennych ]
 GET b
 LOAD a [ a_copy := a ]
 STORE a_copy
-SET 0 [ p := 0 ]
-STORE p
 LOAD b [ IF b == 0 GOTO E_ENDWHILE ] [ IF a_copy < b GOTO E_ENDWHILE ]
 JZERO E_ENDWHILE
 SUB a_copy
@@ -70,9 +67,9 @@ STORE a_copy
 LOAD b [ IF a_copy >= b GOTO E_WHILE_BODY ]
 SUB a_copy
 JZERO E_WHILE_BODY
-LOAD a_copy
+LOAD a_copy [E_ENDWHILE ]
 STORE p
-PUT p [E_ENDWHILE ]
+PUT p
 HALT
 
 
