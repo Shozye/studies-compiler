@@ -1,16 +1,11 @@
-import copy
 from collections import defaultdict
 from pprint import pprint
-from typing import Any
 
 from .Flags import Flag
-from .commands import SET, STORE, Command
+from common.commands import SET, STORE, Command
 from .constant_functions import get_multiply_information
 from .procedure import ProcedureTranslator, VariableInfo, ProcedureInformation
-from ..tac_models.models import Quadruple
-
-
-
+from common.tac_models import Quadruple
 
 
 class Translator:
@@ -62,7 +57,9 @@ class Translator:
         self.procedure_first_commands[info.name] = str(len(self.translated_tac))
         for command in info.translated:
             copied = Command(command.label, command.directive, command.arg)
-            if copied.directive in ["JUMP", "JPOS", "JZERO"] or copied.arg == "" or copied.arg.isdecimal() or copied.arg.startswith("E_"):
+            if copied.directive in ["JUMP", "JPOS",
+                                    "JZERO"] or copied.arg == "" or copied.arg.isdecimal() or copied.arg.startswith(
+                "E_"):
                 pass
             elif copied.arg.startswith("*") and command.arg.endswith("*"):  # it means that it is global variable
                 copied.arg = str(self.symbols["GLOBAL"][copied.arg])
@@ -74,9 +71,9 @@ class Translator:
             self.translated_tac.append(copied)
 
     def _join_all_procedures(self):
-        new_translated_procedures = {"PROG": self.translated_procedures["PROG"]}
+        new_translated_procedures = {"MAIN": self.translated_procedures["MAIN"]}
         for procname, info in self.translated_procedures.items():
-            if procname != "PROG":
+            if procname != "MAIN":
                 new_translated_procedures[procname] = info
         self.translated_procedures = new_translated_procedures
         for name, info in self.translated_procedures.items():

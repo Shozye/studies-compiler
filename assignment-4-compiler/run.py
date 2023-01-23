@@ -1,42 +1,55 @@
+import argparse
 import os
 import sys
 
-from src.optimiser.optimiser import Optimiser
-from src.gebalang.runner import get_tac
-from src.tac_models.utils import write_to_file
-from src.tac_validator.runner import validate
+from src.main import compile_gebalang
 from src.tac_validator.exceptions import TACException
-from src.translator.translator import Translator
-from src.translator.commands import write_commands_to_file
+
+
+class Parser(argparse.ArgumentParser):
+    def __init__(self):
+        super().__init__(
+            description="""GebalangCompiler created by Mateusz Pelechaty""",
+        )
+        self.add_argument("input_path",
+                          type=str,
+                          help="Path to Gebalang file")
+        self.add_argument("output_path",
+                          type=str,
+                          help="Path to compiled file")
+        self.add_argument("-o", "--output-dir",
+                          type=str,
+                          dest="output_dir",
+                          help="""Path to directory, from which relative path of `output_path` will start. 
+                          Defaults to `.`""",
+                          default=".")
+        self.add_argument("-v", "--verbose",
+                          action="store_true",
+                          dest="verbose",
+                          help="Specifies if compiler should save intermediate products of compiler. Defaults to False",
+                          default=False)
 
 
 def main():
-    test_run_folder = "output"
-    if not os.path.exists(test_run_folder):
-        os.mkdir(test_run_folder)
+    args = Parser().parse_args()
 
-    if len(sys.argv) > 1:
-        filepath = sys.argv[1]
-    filename = os.path.basename(filepath).split(".")[0]
+    with open(args.input_path, encoding='utf-8') as file:
+        text = file.read()
+    if not os.path.isdir(args.output_dir):
+        os.mkdir(args.output_dir)
 
-    with open(filepath, encoding='utf-8') as file:
-        data = file.read()
-    tac = get_tac(data, test_run_folder)
-    write_to_file(tac, os.path.join(test_run_folder, f"{filename}.tac"))
     try:
-        validate(tac)
+        compile_gebalang(
+            text,
+            os.path.basename(args.input_path).split(".")[0],
+            args.output_path,
+            args.output_dir,
+            args.verbose
+        )
     except TACException as e:
         print("ERROR:", e.__repr__())
         sys.exit(1)
 
-    optimiser = Optimiser(tac, test_run_folder, filename)
-    tac = optimiser.get_tac()
-    write_to_file(tac, os.path.join(test_run_folder, f"optimised.tac"))
-
-    translator = Translator(tac)
-    translator.translate_all()
-    write_commands_to_file(os.path.join(test_run_folder, f"compiled.tac"), translator.fully_translated_tac)
-
-
 if __name__ == "__main__":
     main()
+

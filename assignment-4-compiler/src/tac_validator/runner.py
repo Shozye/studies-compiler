@@ -1,4 +1,4 @@
-from ..tac_models.models import Quadruple
+from ..common.tac_models import Quadruple
 from .validator import Validator
 
 

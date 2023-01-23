@@ -1,6 +1,6 @@
 from tools.input_parser import Parser
 from tools.config import Config
-from tools.utils import listdir, read_test_config, run_tests
+from tools.utils import listdir, run_tests
 from tools.stats import Statistics
 
 import os

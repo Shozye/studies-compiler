@@ -1,35 +1,35 @@
 from sly import Parser
 
 from .gebalang_lexer import GebalangLexer
-from src.tac_models.labels import Labels
-from src.tac_models.models import (
+from .labels import Labels
+from ..common.tac_models import (
     AssignTAC,
     IfGotoTAC, GotoTAC,
-    WriteTAC, ReadTAC, CallTAC, ReturnTAC, LocalTAC, ParamTAC, Quadruple, LabelTAC
+    WriteTAC, ReadTAC, CallTAC, ReturnTAC, LocalTAC, ParamTAC, Quadruple, LabelTAC, SCallTAC, TAC
 )
 from .parser_returntypes import P
+from .parser_utils import BinaryArithmeticOperation, BinaryLogicOperation
 
 
 class GebalangParser(Parser):
     tokens = GebalangLexer.tokens
     tac: dict[str, list[Quadruple]]
-    cond_negate: dict[str, str]
-    cond_reverse: dict[str, str]
 
     def __init__(self):
         self.tac = {}
-        self.cond_negate = {">": "<=", "<=": ">",
-                            "<": ">=", ">=": "<",
-                            "=": "!=", "!=": "="}
-        self.cond_reverse = {">": "<", "<=": ">=",
-                             "<": "<", ">=": "<=",
-                             "=": "=", "!=": "!="}
         self.labels = Labels()
+        self.function_names = {
+            "*": "!mul",
+            "/": "!div",
+            "%": "!mod"
+        }
 
     @_('procedures main')
     def program_all(self, p: P):
         self.tac = p.procedures
         self.tac.update(p.main)
+        for proc_name in self.tac:
+            self.tac[proc_name] = list(filter(lambda x: x is not None, self.tac[proc_name]))
 
     @_('main')
     def program_all(self, p: P):
@@ -63,8 +63,7 @@ class GebalangParser(Parser):
         _tac.extend((LocalTAC(var) for var in p.local_variables))
         _tac.extend(p.commands)
         _tac.append(ReturnTAC())
-
-        return {"PROG": _tac}
+        return {"MAIN": _tac}
 
     @_('VAR declarations')
     def local_variables(self, p: P) -> list[str]:
@@ -85,51 +84,68 @@ class GebalangParser(Parser):
         """Shouldn't it be the same as command"""
         return p.command
 
-    @_('ID ASSIGN expression SEMICOLON')
-    def command(self, p: P) -> list[Quadruple]:
-        return [AssignTAC(p.ID, *p.expression)]
-
     @_('IF condition THEN commands ELSE commands ENDIF')
     def command(self, p: P) -> list[Quadruple]:
-        ifclosed_etiquette = self.labels.get_ifclosed()
-        _tac = p.condition[0]
-        _tac.extend(p.commands0)
-        _tac.append(GotoTAC(ifclosed_etiquette))
-        _tac.append(LabelTAC(p.condition[2]))
-        _tac.extend(p.commands1)
-        _tac.append(LabelTAC(ifclosed_etiquette))
-
-        return _tac
+        _, ifgoto_false, _, if_false_etiquette = p.condition
+        ifclosed_etiquette = self.labels.get()
+        return [
+            *ifgoto_false,
+            *p.commands0,  # start if body
+            GotoTAC(ifclosed_etiquette),  # end if body
+            LabelTAC(if_false_etiquette),  # start else body
+            *p.commands1,  # else body
+            LabelTAC(ifclosed_etiquette)  # end if else
+        ]
 
     @_('IF condition THEN commands ENDIF')
     def command(self, p: P) -> list[Quadruple]:
-        _tac = p.condition[0]
-        _tac.extend(p.commands)
-        _tac.append(LabelTAC(p.condition[2]))
-        return _tac
+        _, ifgoto_false, _, if_false_etiquette = p.condition
+        return [
+            *ifgoto_false,  # go to after if, if condition is false
+            *p.commands,  # if body
+            LabelTAC(if_false_etiquette)  # after if
+        ]
 
     @_('WHILE condition DO commands ENDWHILE')
     def command(self, p: P) -> list[Quadruple]:
-        _tac = p.condition[0]
-        _tac.extend(p.commands)
-        _tac.append(GotoTAC(p.condition[1]))
-        _tac.append(LabelTAC(p.condition[2]))
-        return _tac
+        ifgoto_true, ifgoto_false, if_true_etiquette, if_false_etiquette = p.condition
+        return [
+            *ifgoto_false,  # go to after while if condition false
+            LabelTAC(if_true_etiquette),  # while body start
+            *p.commands,  # while body
+            *ifgoto_true,  # goto body start if condition true
+            LabelTAC(if_false_etiquette)  # endwhile
+        ]
 
     @_('REPEAT commands UNTIL condition SEMICOLON')
     def command(self, p: P) -> list[Quadruple]:
-        _tac = [LabelTAC(p.condition[2])]
-        _tac.extend(p.commands)
-        _tac.extend(p.condition[0])
-        return _tac
+        _, ifgoto_false, _, if_false_etiquette = p.condition
+        return [
+            LabelTAC(if_false_etiquette),  # repeat-until body start
+            *p.commands,  # repeat-until body
+            *ifgoto_false  # if condition is false then go to beginning of loop
+        ]
 
     @_('proc_head SEMICOLON')
     def command(self, p: P) -> list[Quadruple]:
-        return_etiquette = self.labels.get_return()
-        name, declarations = p.proc_head
-        _tac = [CallTAC(name, [return_etiquette] + declarations),
-                LabelTAC(return_etiquette)]
-        return _tac
+        return_etiquette = self.labels.get()
+        name, args = p.proc_head
+        return [
+            CallTAC(name, [return_etiquette] + args),
+            LabelTAC(return_etiquette)
+        ]
+
+    @_('ID ASSIGN expression SEMICOLON')
+    def command(self, p: P) -> list[Quadruple]:
+        if any([p.expression[1] in ["+", "-", ""],
+                p.expression[1] in ["*", "/", "%"] and p.expression[2] == "2"]):
+            return [AssignTAC(p.ID, *p.expression)]
+
+        return_etiquette = self.labels.get()
+        return [
+            SCallTAC(self.function_names[p.expression[1]], [return_etiquette, p.expression[0], p.expression[2], p.ID]),
+            LabelTAC(return_etiquette)
+        ]
 
     @_('READ ID SEMICOLON')
     def command(self, p: P) -> list[Quadruple]:
@@ -154,64 +170,67 @@ class GebalangParser(Parser):
 
     @_('value')
     def expression(self, p: P) -> tuple[str, str, str]:
-
         return p.value, "", ""
 
     @_('value ARIT_OP value')
     def expression(self, p: P) -> tuple[str, str, str]:
-        val0, arit_op, val1 = p.value0, p.ARIT_OP, p.value1
-        if val0.isdecimal() and val1.isdecimal():
-            if arit_op == "/":
-                arit_op = "//"
-            evaluated = eval(f"{val0} {arit_op} {val1}")
-            if arit_op == "-":
-                evaluated = max(evaluated, 0)
-            return evaluated, "", ""
-
-        if val0.isdecimal() and arit_op in ["+", "*"]:
-            val0, val1 = val1, val0
-
-        if arit_op in ["+", "-"] and val1 == "0":
-            arit_op, val1 = "", ""
-        elif arit_op in ["*", "/"] and val1 == "1":
-            arit_op, val1 = "", ""
-        elif (arit_op == "*" and val1 == "0") or (arit_op == "%" and val1 == "1"):
-            val0, arit_op, val1 = "0", "", ""
-
-        return val0, arit_op, val1
+        bin_op = BinaryArithmeticOperation(p.value0, p.ARIT_OP, p.value1)
+        # Only variable cases cannot be optimised during arithmetic operations
+        return bin_op.get_tuple()
 
     @_('value COND_OP value')
-    def condition(self, p: P) -> tuple[list[Quadruple], str, str]:
-        val0, cond_op, val1 = p.value0, p.COND_OP, p.value1
-        cond_op = self.cond_negate[cond_op]
-        taut = None
-        if val0.isdecimal() and val1.isdecimal():
-            taut = eval(f"{val0} {cond_op} {val1}")
-        if val0 == val1:
-            taut = cond_op in ["=", ">=", "<="]
-        if val0.isdecimal():
-            val0, cond_op, val1 = val1, self.cond_reverse[cond_op], val0
-        if val1 == "0":
-            if cond_op == "<":
-                taut = False
-            elif cond_op == ">=":
-                taut = True
+    def condition(self, p: P) -> tuple[list[Quadruple], list[Quadruple], str, str]:
+        bin_op = BinaryLogicOperation(p.value0, p.COND_OP, p.value1)
 
-        cond_etiquette = self.labels.get_cond()
-        aftergoto_etiquette = self.labels.get_aftergoto()
-        gotocond_etiquette = self.labels.get_gotocond()
-        _tac: list[Quadruple] = []
-        if cond_op != "=":
-            if taut is not None:
-                _tac = [GotoTAC(gotocond_etiquette, cond_etiquette)] if taut else [LabelTAC(cond_etiquette)]
-            else:
-                _tac = [IfGotoTAC(gotocond_etiquette, val0, cond_op, val1, cond_etiquette)]
+        if_true_etiquette = self.labels.get()
+        if_false_etiquette = self.labels.get()
+
+        if bin_op.op in ["=", "!="]:
+            les_bin_op = BinaryLogicOperation(bin_op.val0, "<", bin_op.val1)
+            leq_bin_op = BinaryLogicOperation(bin_op.val0, "<=", bin_op.val1)
+            gre_bin_op = BinaryLogicOperation(bin_op.val0, ">", bin_op.val1)
+            jump_over_etiquette = self.labels.get()
+            if bin_op.op == "=":
+                ifgoto_true = [IfGotoTAC(jump_over_etiquette, *les_bin_op.get_tuple()),
+                               IfGotoTAC(if_true_etiquette, *leq_bin_op.get_tuple()),
+                               LabelTAC(jump_over_etiquette)]
+                ifgoto_false = [IfGotoTAC(if_false_etiquette, *les_bin_op.get_tuple()),
+                                IfGotoTAC(if_false_etiquette, *gre_bin_op.get_tuple())]
+            else:  # !=
+                ifgoto_false = [IfGotoTAC(jump_over_etiquette, *les_bin_op.get_tuple()),
+                                IfGotoTAC(if_true_etiquette, *leq_bin_op.get_tuple()),
+                                LabelTAC(jump_over_etiquette)]
+                ifgoto_true = [IfGotoTAC(if_false_etiquette, *les_bin_op.get_tuple()),
+                               IfGotoTAC(if_false_etiquette, *gre_bin_op.get_tuple())]
         else:
-            if val1 != "0":
-                _tac = [IfGotoTAC(aftergoto_etiquette, val0, "<", val1, cond_etiquette)]
-            _tac.append(IfGotoTAC(gotocond_etiquette, val0, "<=", val1, cond_etiquette))
-        _tac.append(LabelTAC(aftergoto_etiquette))
-        return _tac, cond_etiquette, gotocond_etiquette
+            ifgoto_true = [IfGotoTAC(if_true_etiquette, *bin_op.get_tuple())]
+
+            bin_op.negate()
+            bin_op.optimise()
+            ifgoto_false = [IfGotoTAC(if_false_etiquette, *bin_op.get_tuple())]
+
+        real_ifgoto_true = []
+        real_ifgoto_false = []
+        for tac in ifgoto_true:
+            if tac.type == TAC.LABEL:
+                real_ifgoto_true.append(tac)
+            elif tac.arg1 == "1":
+                real_ifgoto_true.append(GotoTAC(tac.res))
+            elif tac.arg1 == "0":
+                pass
+            else:
+                real_ifgoto_true.append(tac)
+
+        for tac in ifgoto_false:
+            if tac.type == TAC.LABEL:
+                real_ifgoto_false.append(tac)
+            elif tac.arg1 == "1":
+                real_ifgoto_false.append(GotoTAC(tac.res))
+            elif tac.arg1 == "0":
+                pass
+            else:
+                real_ifgoto_false.append(tac)
+        return real_ifgoto_true, real_ifgoto_false, if_true_etiquette, if_false_etiquette
 
     @_('NUM')
     def value(self, p: P) -> str:

@@ -1,11 +1,11 @@
-from ..tac_models.models import Quadruple
+from ..common.tac_models import Quadruple
 
 
 class C:
     lexed = str
     value = str
     expression = tuple[str]
-    condition = tuple[list[Quadruple], str, str]
+    condition = tuple[list[Quadruple], list[Quadruple], str, str]
     declarations = list[str]
     local_variables = list[str]
     proc_head = tuple[str, list[str]]
@@ -14,6 +14,7 @@ class C:
     procedure = dict[str, list[Quadruple]]
     procedures = dict[str, list[Quadruple]]
     main = dict[str, list[Quadruple]]
+
 
 class P:
     NUM: C.lexed

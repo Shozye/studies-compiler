@@ -15,9 +15,6 @@ p := a_copy [E_ENDWHILE ]
 PUT p
 
 Kod trójadresowy
-GET a
-GET b
-a_copy := a
 IF b == 0 GOTO E_ENDWHILE
 IF a_copy < b GOTO E_ENDWHILE
 b_copy := b [ E_WHILE_BODY ]

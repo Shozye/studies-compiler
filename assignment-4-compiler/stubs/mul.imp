@@ -1,9 +1,12 @@
 =========================== PSEUDOKOD ==================================
 
 mul(a, b, p)
+VAR temp
+BEGIN
     p := 0;
     while b > 0
-        if b % 2 = 0
+        temp := b % 2;
+        if temp = 0
             p := p + a;
         a := a + a;
         b := b / 2
@@ -19,7 +22,7 @@ p := 0
 IF b = 0 GOTO E_ENDWHILE
 IF b % 2 = 1 GOTO E_ENDIF [ E_WHILE_BODY ]
 p := p + a
-a := a + a;
+a := a + a; [ E_ENDIF]
 b := b/ 2
 IF b > 0 GOTO E_WHILE_BODY
 WRITE p [E_ENDWHILE]

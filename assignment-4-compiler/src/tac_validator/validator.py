@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Callable
 
 from .exceptions import *
-from ..tac_models.models import TAC, Quadruple
+from ..common.tac_models import TAC, Quadruple
 
 
 @dataclass
@@ -47,11 +47,13 @@ class Validator:
         func_mapping: dict[TAC, Callable] = {
             TAC.READ: self.read, TAC.WRITE: self.write,
             TAC.PARAM: self.param, TAC.LOCAL: self.local,
-            TAC.CALL: self.call, TAC.RETURN: self.return_,
+            TAC.SCALL: self.scall, TAC.CALL: self.call,
+            TAC.RETURN: self.return_,
             TAC.IFGOTO: self.ifgoto, TAC.GOTO: self.goto,
             TAC.ASSIGN: self.assign
         }
         for proc in tacs:
+
             if proc in self.symbols:
                 raise ProcedureAlreadyDeclaredException(proc)
             self.curr_proc = proc
@@ -84,19 +86,33 @@ class Validator:
     def call(self, tac: Quadruple):
         if tac.arg1 == self.curr_proc:
             raise RecursiveCallException(tac.arg1)
+
         if tac.arg1 not in self.symbols:
             raise ProcedureNotDeclaredException(tac.arg1)
-        for arg in tac.arg2:
-            if not arg.startswith("E_"):  # Nothing to analyse in pushing return values
-                self.raise_if_not_declared(arg)
         if len(tac.arg2) - 1 != len(self.symbols[tac.arg1].param):
             raise NotEnoughParamsException(f"{tac.arg1}. {len(tac.arg2) - 1} != {len(self.symbols[tac.arg1].param)}")
+
+        for arg in tac.arg2:
+            if not arg.startswith("E_") and not arg.isdecimal():  # Nothing to analyse in pushing return values
+                self.raise_if_not_declared(arg)
         for var in tac.arg2:
             if var in self.curr().param and self.curr().param_initialised[var].need:
                 self.expect_initialised(var, f"{self.curr_proc}: Procedure {tac.arg1} expects {var} initialised")
         for arg in tac.arg2:
             if not arg.startswith("E_"):
                 self.curr().initialised.append(arg)  # we are assuming procedures initialise variables
+
+    def scall(self, tac: Quadruple):
+        _, a, b, p = tac.arg2
+        for var in [a, b, p]:
+            self.raise_if_not_declared(var)
+        for var in [a, b]:
+            var: str
+            if var.isdecimal():
+                continue
+            self.expect_initialised(var, f"{self.curr_proc}: Procedure {tac.arg1} expects {var} initialised")
+        self.curr().initialised.append(p)
+
 
     def assign(self, tac: Quadruple):
         self.raise_if_not_declared(tac.res)

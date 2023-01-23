@@ -1,15 +1,29 @@
-from ..tac_models.models import Quadruple
+from dataclasses import dataclass
 
+from ..common.commands import Command
+from ..common.tac_models import Quadruple
+
+@dataclass
+class VariableInfo:
+    is_param: bool
+    id: int = 0
 
 class BasicBlock:
     """Class represents block of code that always follows from first to last line without any jumps and branching"""
+    index: int
+    tacs: list[Quadruple]
+    commands: list[Command]
 
     def __init__(self, index: int, tacs: list[Quadruple]):
         self.index = index
         self.tacs = tacs
+        self.commands = []
 
     def __repr__(self):
         return f"BasicBlock(id={self.index}, len(tacs)={len(self.tacs)})"
+
+    def set_commands(self, commands: list[Command]):
+        self.commands = commands
 
 
 class OutEdge:
