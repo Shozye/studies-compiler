@@ -137,6 +137,14 @@ class GebalangParser(Parser):
 
     @_('ID ASSIGN expression SEMICOLON')
     def command(self, p: P) -> list[Quadruple]:
+        if p.expression[0].isdecimal() and p.expression[2].isdecimal():
+            return_etiquette = self.labels.get()
+            return [
+                SCallTAC(self.function_names[p.expression[1]],
+                         [return_etiquette, p.expression[0], p.expression[2], p.ID]),
+                LabelTAC(return_etiquette)
+            ]
+
         if any([p.expression[1] in ["+", "-", ""],
                 p.expression[1] in ["*", "/", "%"] and p.expression[2] == "2"]):
             return [AssignTAC(p.ID, *p.expression)]

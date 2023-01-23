@@ -32,6 +32,5 @@ def compile_gebalang(text: str, filename: str, output_path: str, output_dir: str
 
     # " --- END PART "
     commands = merge(icfg)
-
     write_commands_to_file(os.path.join(output_dir, output_path), commands)
 

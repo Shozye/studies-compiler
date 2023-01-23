@@ -1,41 +1,34 @@
-GET a
-GET b
-a_copy = a
-p := 0
-if b == 0:
-    while a_copy >= b
-        temp := 1 [ E_WHILE_BODY ]
-        b_copy := b
-        while a_copy >= b_copy
-            temp *= 2 [ E_INNER_WHILE_BODY ]
-            b_copy *= 2
+[ PSEUDOKOD ]
+div(a[out], b[in], p[inout])
+    p := 0
+    if b != 0:
+        temp := 1;
+        while a >= b:
+            b *= 2;
+            temp *= 2;
         end
-        b_copy /= 2 [ E_INNER_ENDWHILE ]
-        temp /= 2
-        p := p + temp
-        a_copy := a_copy - b_copy
-    end
-PUT p [E_ENDWHILE ]
 
-Kod trójadresowy
+        while temp > 0:
+            IF b < a_copy
+                p += temp;
+                a -= b;
+            b /= 2;
+            temp /= 2;
+        end
+    endif
+return
+
+[ Kod trójadresowy ]
 GET a
 GET b
-a_copy := a
 p := 0
-IF b == 0 GOTO E_ENDWHILE
-IF a_copy < b GOTO E_ENDWHILE
-temp := 1 [ E_WHILE_BODY ]
-b_copy := b
-IF b_copy - a_copy > 0 GOTO E_INNER_ENDWHILE
-temp *= 2 [ E_INNER_WHILE_BODY ]
-b_copy *= 2
-IF b_copy - a_copy = 0 GOTO E_INNER_WHILE_BODY
-b_copy /= 2 [ E_INNER_ENDWHILE ]
-temp /= 2
-p := p + temp
-a_copy := a_copy - b_copy
-IF a_copy >= b GOTO E_WHILE_BODY
-PUT p [E_ENDWHILE ]
+IF b == 0 GOTO E_ENDPROGRAM
+
+temp := 1
+IF a < b GOTO E_ENDWHILE1
+
+
+PUT p [ E_ENDPROGRAM ]
 
 Kod z etykietami i zmiennymi :
 [ Pamiec:

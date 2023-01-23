@@ -83,6 +83,10 @@ class BinaryArithmeticOperation(BinOp):
         self._optimise_zeroing_cases()
         if self.op == "/":
             self.op = "//"
+        if self.op == "*":
+            value = self.eval()
+            if value > 2**63 - 1:
+                return
         self.set_solo_val0(str(max(0, self.eval())))
 
     def _optimise_mixed_case(self):
