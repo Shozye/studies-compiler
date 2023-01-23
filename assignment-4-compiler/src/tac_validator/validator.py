@@ -53,7 +53,6 @@ class Validator:
             TAC.ASSIGN: self.assign
         }
         for proc in tacs:
-
             if proc in self.symbols:
                 raise ProcedureAlreadyDeclaredException(proc)
             self.curr_proc = proc
@@ -104,12 +103,12 @@ class Validator:
 
     def scall(self, tac: Quadruple):
         _, a, b, p = tac.arg2
-        for var in [a, b, p]:
-            self.raise_if_not_declared(var)
+        self.raise_if_not_declared(p)
         for var in [a, b]:
             var: str
             if var.isdecimal():
                 continue
+            self.raise_if_not_declared(var)
             self.expect_initialised(var, f"{self.curr_proc}: Procedure {tac.arg1} expects {var} initialised")
         self.curr().initialised.append(p)
 

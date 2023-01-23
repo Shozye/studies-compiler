@@ -9,9 +9,6 @@ VAR i,o
 BEGIN
     m:=1;
     i:=n;
-    WRITE 6969;
-    WRITE m;
-    WRITE i;
     WHILE i>0 DO
         o:=i%2;
         IF o=1 THEN
@@ -21,14 +18,12 @@ BEGIN
         ENDIF
         i:=i-1;
     ENDWHILE
-    WRITE m;
 END
 
 PROCEDURE bc(n,k,m) IS
 VAR p,a,b,c
 BEGIN
    s(n,a);
-   WRITE a;
    p:=n-k;
    s(p,b);
    s(k,c);

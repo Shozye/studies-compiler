@@ -71,7 +71,7 @@ class ProcedureTranslator:
                 ]
             )
 
-        self.commands.extend([LOAD(p) if self._is_param(arg) else SET(p),
+        self.commands.extend([LOAD(p) if self._is_param(p) else SET(p),
                               STORE(f"#{tac.arg1}#{3}#")])
         self.commands.extend([JUMP(f"#{tac.arg1}#")])
 
@@ -172,7 +172,7 @@ class ProcedureTranslator:
         if tac.arg2 != "0":
             print('its fucked up')
         self.commands.extend([
-            self._GEN_LOAD(tac.arg1),
+            self._GEN_LOAD(tac.arg1, tac.label),
             JZERO(tac.res)
         ])
 

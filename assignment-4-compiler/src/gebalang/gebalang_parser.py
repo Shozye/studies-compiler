@@ -198,10 +198,10 @@ class GebalangParser(Parser):
                                 IfGotoTAC(if_false_etiquette, *gre_bin_op.get_tuple())]
             else:  # !=
                 ifgoto_false = [IfGotoTAC(jump_over_etiquette, *les_bin_op.get_tuple()),
-                                IfGotoTAC(if_true_etiquette, *leq_bin_op.get_tuple()),
+                                IfGotoTAC(if_false_etiquette, *leq_bin_op.get_tuple()),
                                 LabelTAC(jump_over_etiquette)]
-                ifgoto_true = [IfGotoTAC(if_false_etiquette, *les_bin_op.get_tuple()),
-                               IfGotoTAC(if_false_etiquette, *gre_bin_op.get_tuple())]
+                ifgoto_true = [IfGotoTAC(if_true_etiquette, *les_bin_op.get_tuple()),
+                               IfGotoTAC(if_true_etiquette, *gre_bin_op.get_tuple())]
         else:
             ifgoto_true = [IfGotoTAC(if_true_etiquette, *bin_op.get_tuple())]
 

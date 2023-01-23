@@ -1,15 +1,5 @@
 [ Program Reads and multiplies two numbers ]
 
-PROCEDURE decrement(a) IS
-BEGIN
-    a := a - 1;
-END
-
-PROCEDURE increment(a) IS
-BEGIN
-    a:= a + 1;
-END
-
 PROCEDURE mul(a, b, p) IS
 VAR a_copy
 BEGIN
@@ -18,7 +8,7 @@ BEGIN
     WHILE a_copy != 0
     DO
         p := p + b;
-        decrement(a_copy);
+        a_copy := a_copy - 1;
     ENDWHILE
 END
 

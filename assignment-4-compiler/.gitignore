@@ -9,3 +9,4 @@
 **/lexer.cc
 **/parser.cc
 **/parser.hh
+**/parser.y
