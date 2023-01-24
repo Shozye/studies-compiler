@@ -8,13 +8,13 @@ div(a[out], b[in], p[inout])
             temp *= 2;
         end
 
-        while temp > 0:
-            IF b < a_copy
+        repeat:
+            IF b <= a
                 p += temp;
                 a -= b;
             b /= 2;
             temp /= 2;
-        end
+        until temp = 0
     endif
 return
 
@@ -26,7 +26,16 @@ IF b == 0 GOTO E_ENDPROGRAM
 
 temp := 1
 IF a < b GOTO E_ENDWHILE1
+b := b * 2; [ E_WHILE1_BODY ]
+temp := temp * 2;
+IF a >= b GOTO E_WHILE1_BODY
 
+IF b > a GOTO E_ENDIF [E_ENDWHILE1] [E_WHILE2_BODY]
+    p := p + temp;
+    a := a - b;
+b := b / 2; [ E_ENDIF ]
+temp := temp / 2;
+IF temp > 0 GOTO E_WHILE2_BODY
 
 PUT p [ E_ENDPROGRAM ]
 
@@ -37,51 +46,45 @@ Kod z etykietami i zmiennymi :
  2 | a
  3 | b
  4 | p
- 5 | a_copy
- 6 | b_copy
- 7 | temp
- Etykiety: E_WHILE_BODY, E_INNER_WHILE_BODY, E_INNER_ENDWHILE, E_ENDWHILE ]
+ 5 | temp
 
-GET a [ Wczytanie zmiennych ]
+ Etykiety: E_ENDPROGRAM, E_ENDWHILE1, E_WHILE1_BODY,
+ E_ENDWHILE2, E_ENDIF, E_WHILE2_BODY ]
+
+GET a
 GET b
-LOAD a [ a_copy := a ]
-STORE a_copy
 SET 0 [ p := 0 ]
 STORE p
-LOAD b [ IF b == 0 GOTO E_ENDWHILE ] [ IF a_copy < b GOTO E_ENDWHILE ]
-JZERO E_ENDWHILE
-SUB a_copy
-JPOS E_ENDWHILE
-SET 1 [ temp := 1 ] [ E_WHILE_BODY ]
+LOAD b [ IF b == 0 GOTO E_ENDPROGRAM ]
+JZERO E_ENDPROGRAM
+SET 1 [ temp := 1 ]
 STORE temp
-LOAD b [ b_copy := b ]
-STORE b_copy
-SUB a_copy
-JPOS E_INNER_ENDWHILE [ IF b_copy - a_copy > 0 GOTO E_INNER_ENDWHILE ]
-LOAD temp [ temp *= 2 ] [ E_INNER_WHILE_BODY ]
-ADD 0
+LOAD b [ IF a < b GOTO E_WHILE2_BODY ]
+SUB a
+JPOS E_WHILE2_BODY
+E_WHILE1_BODY : LOAD b [ b := b * 2 ]
+ADD *storage_0*
+STORE b;
+LOAD temp [ temp := temp * 2 ]
+ADD *storage_0*
 STORE temp
-LOAD b_copy [ b_copy *= 2 ]
-ADD 0
-STORE b_copy
-SUB a_copy [ IF b_copy - a_copy = 0 GOTO E_INNER_WHILE_BODY ]
-JZERO E_INNER_WHILE_BODY
-LOAD b_copy [ b_copy /= 2 ] [ E_INNER_ENDWHILE ]
-HALF
-STORE b_copy
-LOAD temp [ temp /= 2 ] [ p := p + temp ]
-HALF
-STORE temp
-ADD p
+LOAD b [ IF a >= b GOTO E_WHILE1_BODY ]
+SUB a
+JZERO E_WHILE1_BODY
+E_WHILE2_BODY : LOAD b [ IF b > a GOTO E_ENDIF ]
+SUB a
+JPOS E_ENDIF
+LOAD p [ p := p + temp; ]
+ADD temp
 STORE p
-LOAD a_copy [ a_copy := a_copy - b_copy ]
-SUB b_copy
-STORE a_copy
-LOAD b [ IF a_copy >= b GOTO E_WHILE_BODY ]
-SUB a_copy
-JZERO E_WHILE_BODY
-PUT p [E_ENDWHILE ]
-HALT
-
-
-
+LOAD a [ a := a - b; ]
+SUB b
+STORE a
+E_ENDIF : LOAD b [ b := b / 2; ]
+HALF
+STORE b
+LOAD temp [ temp := temp / 2; ]
+HALF
+STORE temp
+JPOS E_WHILE2_BODY [ IF temp > 0 GOTO E_WHILE2_BODY ]
+E_ENDPROGRAM : PUT p [ PUT p ]
