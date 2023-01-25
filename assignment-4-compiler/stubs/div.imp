@@ -4,8 +4,8 @@ div(a[in], b[in], p[inout])
     if b != 0:
         temp := 1;
         while a >= b:
-            b *= 2;
             temp *= 2;
+            b *= 2;
         end
 
         repeat:
@@ -25,12 +25,12 @@ p := 0
 IF b == 0 GOTO E_ENDPROGRAM
 
 temp := 1
-IF a < b GOTO E_ENDWHILE1
-b := b * 2; [ E_WHILE1_BODY ]
-temp := temp * 2;
+IF a < b GOTO E_WHILE2_BODY
+temp := temp * 2; [ E_WHILE1_BODY ]
+b := b * 2;
 IF a >= b GOTO E_WHILE1_BODY
 
-IF b > a GOTO E_ENDIF [E_ENDWHILE1] [E_WHILE2_BODY]
+IF b > a GOTO E_ENDIF [E_WHILE2_BODY]
     p := p + temp;
     a := a - b;
 b := b / 2; [ E_ENDIF ]
@@ -51,10 +51,8 @@ Kod z etykietami i zmiennymi :
  Etykiety: E_ENDPROGRAM, E_ENDWHILE1, E_WHILE1_BODY,
  E_ENDWHILE2, E_ENDIF, E_WHILE2_BODY ]
 
-GET a
-GET b
 SET 0 [ p := 0 ]
-STORE p
+STOREI p
 LOAD b [ IF b == 0 GOTO E_ENDPROGRAM ]
 JZERO E_ENDPROGRAM
 SET 1 [ temp := 1 ]
@@ -73,9 +71,9 @@ JZERO E_WHILE1_BODY
 E_WHILE2_BODY : LOAD b [ IF b > a GOTO E_ENDIF ]
 SUB a
 JPOS E_ENDIF
-LOAD p [ p := p + temp; ]
+LOADI p [ p := p + temp; ]
 ADD temp
-STORE p
+STOREI p
 LOAD a [ a := a - b; ]
 SUB b
 STORE a
@@ -86,4 +84,4 @@ LOAD temp [ temp := temp / 2; ]
 HALF
 STORE temp
 JPOS E_WHILE2_BODY [ IF temp > 0 GOTO E_WHILE2_BODY ]
-E_ENDPROGRAM : PUT p [ PUT p ]
+E_ENDPROGRAM : JUMPI $ret [ return ]

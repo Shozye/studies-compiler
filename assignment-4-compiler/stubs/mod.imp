@@ -1,31 +1,39 @@
-GET a
-GET b
-a_copy = a
-if b == 0:
-    while a_copy >= b
-        b_copy := b [ E_WHILE_BODY ]
-        while a_copy >= b_copy
-            b_copy *= 2 [ E_INNER_WHILE_BODY ]
+[ PSEUDOKOD ]
+mod(a[in], b[in], p[inout])
+    p := 0
+    if b != 0:
+        b_copy = b;
+        while a >= b:
+            b *= 2;
         end
-        b_copy /= 2 [ E_INNER_ENDWHILE ]
-        a_copy := a_copy - b_copy
-    end
-end
-p := a_copy [E_ENDWHILE ]
-PUT p
+
+        repeat:
+            b /= 2;
+            IF b <= a
+                a -= b;
+        until a < b_copy
+    p := a
+    endif
+return
 
 Kod trójadresowy
-IF b == 0 GOTO E_ENDWHILE
-IF a_copy < b GOTO E_ENDWHILE
-b_copy := b [ E_WHILE_BODY ]
-IF b_copy - a_copy > 0 GOTO E_INNER_ENDWHILE
-b_copy *= 2 [ E_INNER_WHILE_BODY ]
-IF b_copy - a_copy = 0 GOTO E_INNER_WHILE_BODY
-b_copy /= 2 [ E_INNER_ENDWHILE ]
-a_copy := a_copy - b_copy
-IF a_copy >= b GOTO E_WHILE_BODY
-p := a_copy [E_ENDWHILE ]
-PUT p
+IF b > 0 GOTO IF_BODY
+    p := 0;
+    RETURN
+
+IF_BODY: b_copy := b;
+IF a < b GOTO E_MOD_WHILE2_BODY
+E_MOD_WHILE1_BODY: b *= 2
+IF a >= b GOTO E_MOD_WHILE1_BODY
+
+E_MOD_WHILE2_BODY : b /= 2
+IF b > a GOTO E_MOD_WHILE2_BODY
+a -= b;
+IF a >= b_copy GOTO E_MOD_WHILE2_BODY
+
+p := a
+RETURN [E_ENDWHILE ]
+
 
 Kod z etykietami i zmiennymi :
 [ Pamiec:
@@ -34,40 +42,33 @@ Kod z etykietami i zmiennymi :
  2 | a
  3 | b
  4 | p
- 5 | a_copy
  6 | b_copy
  Etykiety: E_WHILE_BODY, E_INNER_WHILE_BODY, E_INNER_ENDWHILE, E_ENDWHILE ]
 
-GET a [ Wczytanie zmiennych ]
-GET b
-LOAD a [ a_copy := a ]
-STORE a_copy
-LOAD b [ IF b == 0 GOTO E_ENDWHILE ] [ IF a_copy < b GOTO E_ENDWHILE ]
-JZERO E_ENDWHILE
-SUB a_copy
-JPOS E_ENDWHILE
-LOAD b [ b_copy := b ] [ E_WHILE_BODY ]
-STORE b_copy
-SUB a_copy
-JPOS E_INNER_ENDWHILE [ IF b_copy - a_copy > 0 GOTO E_INNER_ENDWHILE ]
-LOAD b_copy [ b_copy *= 2 ] [ E_INNER_WHILE_BODY ]
-ADD 0
-STORE b_copy
-SUB a_copy [ IF b_copy - a_copy = 0 GOTO E_INNER_WHILE_BODY ]
-JZERO E_INNER_WHILE_BODY
-LOAD b_copy [ b_copy /= 2 ] [ E_INNER_ENDWHILE ]
+LOAD b [ IF b > 0 GOTO IF_MOD_BODY ]  [ IF_MOD_BODY: b_copy := b; ] [ IF a < b GOTO E_MOD_WHILE2_BODY ]
+JPOS E_IF_MOD_BODY
+SET 0 [ p := 0; ]
+STOREI p
+JUMPI $ret
+E_IF_MOD_BODY : STORE b_copy
+SUB a
+JPOS E_MOD_WHILE2_BODY
+E_MOD_WHILE1_BODY : LOAD b [ b *= 2 ] [ IF a >= b GOTO E_MOD_WHILE1_BODY ]
+ADD *storage_0*
+STORE b
+SUB a
+JZERO E_MOD_WHILE1_BODY
+E_MOD_WHILE2_BODY : LOAD b [ b /= 2 ]
 HALF
-STORE b_copy
-LOAD a_copy [ a_copy := a_copy - b_copy ]
-SUB b_copy
-STORE a_copy
-LOAD b [ IF a_copy >= b GOTO E_WHILE_BODY ]
-SUB a_copy
-JZERO E_WHILE_BODY
-LOAD a_copy [E_ENDWHILE ]
-STORE p
-PUT p
-HALT
-
-
-
+STORE b
+SUB a [ IF b > a GOTO E_MOD_WHILE2_BODY ]
+JPOS E_MOD_WHILE2_BODY
+LOAD a [ a -= b; ]
+SUB b
+STORE a
+LOAD b_copy [ IF a >= b_copy GOTO E_MOD_WHILE2_BODY ]
+SUB a
+JZERO E_MOD_WHILE2_BODY
+LOAD a
+STOREI p
+JUMPI $ret

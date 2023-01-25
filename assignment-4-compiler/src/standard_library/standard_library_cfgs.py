@@ -37,7 +37,7 @@ def get_mul(commands: list[Command]) -> CFG:
 def get_div(commands: list[Command]) -> CFG:
     cfg = CFG([], False)
     bb = BasicBlock(0, [ParamTAC("$ret"), ParamTAC("a"), ParamTAC("b"), ParamTAC("p"),
-                        LocalTAC("temp"), #LocalTAC("b_copy"),
+                        LocalTAC("temp"), LocalTAC("b_copy"),
                         ReturnTAC()])
     bb.set_commands(commands)
     cfg.nodes[0] = bb
@@ -46,7 +46,8 @@ def get_div(commands: list[Command]) -> CFG:
         "a": VariableInfo(True, 11),
         "b": VariableInfo(True, 12),
         "p": VariableInfo(True, 13),
-        "temp": VariableInfo(False, 14)
+        "temp": VariableInfo(False, 14),
+        "b_copy": VariableInfo(False, 15)
     }
     return cfg
 
@@ -71,6 +72,6 @@ def get_standard_library() -> dict[str, CFG]:
     static_path = os.path.join(os.path.dirname(__file__), "static")
     return {
         "!mul": get_mul(get_commands(os.path.join(static_path, "mul.imp"))),
-        "!div": get_div(get_commands(os.path.join(static_path, "new_div.imp"))),
-        "!mod": get_mod(get_commands(os.path.join(static_path, "mod.imp")))
+        "!div": get_div(get_commands(os.path.join(static_path, "new_div_2.imp"))),
+        "!mod": get_mod(get_commands(os.path.join(static_path, "new_mod.imp")))
     }
