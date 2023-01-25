@@ -46,8 +46,7 @@ def get_div(commands: list[Command]) -> CFG:
         "a": VariableInfo(True, 11),
         "b": VariableInfo(True, 12),
         "p": VariableInfo(True, 13),
-        "temp": VariableInfo(False, 14)  # ,
-        # "b_copy": VariableInfo(False, 15)
+        "temp": VariableInfo(False, 14)
     }
     return cfg
 

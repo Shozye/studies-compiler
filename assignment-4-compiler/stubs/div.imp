@@ -1,5 +1,5 @@
 [ PSEUDOKOD ]
-div(a[out], b[in], p[inout])
+div(a[in], b[in], p[inout])
     p := 0
     if b != 0:
         temp := 1;
@@ -62,14 +62,13 @@ STORE temp
 LOAD b [ IF a < b GOTO E_WHILE2_BODY ]
 SUB a
 JPOS E_WHILE2_BODY
-E_WHILE1_BODY : LOAD b [ b := b * 2 ]
-ADD *storage_0*
-STORE b;
-LOAD temp [ temp := temp * 2 ]
+E_WHILE1_BODY : LOAD temp [ temp := temp * 2 ]
 ADD *storage_0*
 STORE temp
-LOAD b [ IF a >= b GOTO E_WHILE1_BODY ]
-SUB a
+LOAD b [ b := b * 2 ]
+ADD *storage_0*
+STORE b
+SUB a [ IF a >= b GOTO E_WHILE1_BODY ]
 JZERO E_WHILE1_BODY
 E_WHILE2_BODY : LOAD b [ IF b > a GOTO E_ENDIF ]
 SUB a
