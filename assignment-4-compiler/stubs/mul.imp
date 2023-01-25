@@ -16,8 +16,6 @@ end
 Kod trójadresowy:
 Nie wzialem tutaj pod uwage tego że potrzebne są kopie
 
-GET a
-GET b
 p := 0
 IF b = 0 GOTO E_ENDWHILE
 IF b % 2 = 1 GOTO E_ENDIF [ E_WHILE_BODY ]
@@ -38,10 +36,7 @@ ASSEMBLER z etykietami
 5 - a_copy
 6 - b_copy
 Etykiety: E_ENDWHILE, E_ENDIF, E_WHILE_BODY]
-SET 1
-STORE one
-GET a
-GET b
+
 LOAD a [ Podmienienie na kopie ]
 STORE a_copy
 LOAD b
