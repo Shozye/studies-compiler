@@ -31,9 +31,11 @@ def compile_gebalang(text: str, filename: str, output_path: str, output_dir: str
 
     translate(icfg)
     if verbose:
-        write_icfg_to_file(icfg, f"{output_dir}/{filename}.bb.asm", False)
+        write_icfg_to_file(icfg, f"{output_dir}/{filename}-no-optimisation.bb.asm", False)
     " --- ASSEMBLER OPTIMISATION PART --- "
     optimise_assembler(icfg)
+    if verbose:
+        write_icfg_to_file(icfg, f"{output_dir}/{filename}.bb.asm", False)
 
     # " --- END PART "
     commands = merge(icfg)

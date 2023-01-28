@@ -41,12 +41,16 @@ class RedundantLoadOptimiser:
         """
 
     def _optimise_block(self, bb: BasicBlock):
+        if bb.index == 20:
+            print(bb)
         prev_command = bb.commands[0]
         to_remove = set()
         for i, command in enumerate(bb.commands):
-            if command.directive.startswith("LOAD"):
+            if bb.index == 20:
+                print(command)
+            if command.is_load:
                 if prev_command.arg == command.arg:
-                    if prev_command.directive.startswith("STORE"):
+                    if prev_command.is_store:
                         to_remove.add(i)
                     pass
             prev_command = command

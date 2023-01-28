@@ -40,7 +40,7 @@ def write_icfg_to_file(
                         file.write(f"{get_tac_repr(tac, max_label)}\n")
                 else:
                     for cmd in bb.commands:
-                        file.write(f"{cmd}\n")
+                        file.write(f"{cmd.label} : {cmd}\n")
 
 
 def fill_DiGraph_with_CFG(G: nx.DiGraph, proc: str, cfg: CFG):
