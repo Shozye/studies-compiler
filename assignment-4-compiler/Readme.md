@@ -30,6 +30,8 @@ python3 -m pip install -r requirements.txt
     - `translator` package that translates TAC CFG to Assembler CFG
     - `merger` package that merges Assembler CFG to one file assembler
     - `common` package with common classes between packages
+    - `assembler_optimiser` package with optimising classes for assembly cfg
+    - `cfg_optimiser` package with optimising classes for tac cfg
     - `main.py` library main method
 
 ## Gebalang
