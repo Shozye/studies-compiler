@@ -59,7 +59,6 @@ class CFG:
             self._make_nodes(tacs)
             self._fill_edges()
             self._fill_backtrack_edges()
-            print(self.backtrack_edges)
 
     def _fill_backtrack_edges(self):
         for start, out_edge in self.edges.items():
