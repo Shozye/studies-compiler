@@ -12,7 +12,7 @@ python run.py tests/test_data/test_gebala/example3.imp compiled.out -o output -v
 echo 1 | ./vms/vm-original/maszyna-wirtualna-cln output/compiled.out
 
 echo "TEST: GCD 4 liczb. Oczekiwano 523"
-python run.py tests/test_data/test_gebala/program1.imp compiled.out -o output
+python run.py tests/test_data/test_gebala/program1.imp compiled.out -o output -v
 echo "3814532926 1065023079 3875997978 1438730637" | ./vms/vm-original/maszyna-wirtualna-cln output/compiled.out
 
 echo "TEST: Krzywa Eliptyczna. Oczekiwano 43 21"

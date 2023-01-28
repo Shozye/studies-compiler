@@ -33,5 +33,12 @@ class DeadCodeRemover:
             for node in nodes_to_remove:
                 del cfg.nodes[node]
 
+        cfgs_to_remove = set()
+        for name, cfg in self.icfg.cfgs.items():
+            if len(cfg.nodes) == 0:
+                cfgs_to_remove.add(name)
+        for cfg in cfgs_to_remove:
+            del self.icfg.cfgs[cfg]
+
 
 
