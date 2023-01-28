@@ -37,8 +37,7 @@ def get_mul(commands: list[Command]) -> CFG:
 def get_div(commands: list[Command]) -> CFG:
     cfg = CFG([], False)
     bb = BasicBlock(0, [ParamTAC("$ret"), ParamTAC("a"), ParamTAC("b"), ParamTAC("p"),
-                        LocalTAC("temp"), LocalTAC("b_copy"),
-                        ReturnTAC()])
+                        LocalTAC("temp"), LocalTAC("b_copy"), ReturnTAC()])
     bb.set_commands(commands)
     cfg.nodes[0] = bb
     cfg.symbols = {
@@ -73,5 +72,5 @@ def get_standard_library() -> dict[str, CFG]:
     return {
         "!mul": get_mul(get_commands(os.path.join(static_path, "mul.imp"))),
         "!div": get_div(get_commands(os.path.join(static_path, "new_div_2.imp"))),
-        "!mod": get_mod(get_commands(os.path.join(static_path, "new_mod.imp")))
+        "!mod": get_mod(get_commands(os.path.join(static_path, "new_mod2.imp")))
     }

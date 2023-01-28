@@ -17,8 +17,9 @@ mod(a[in], b[in], p[inout])
 return
 
 Kod trójadresowy
+IF a = 0 GOTO E_MOD_BORING_CASE
 IF b > 0 GOTO IF_BODY
-    p := 0;
+    p := 0; [ E_MOD_BORING_CASE ]
     RETURN
 
 IF_BODY: b_copy := b;
@@ -45,11 +46,13 @@ Kod z etykietami i zmiennymi :
  6 | b_copy
  Etykiety: E_WHILE_BODY, E_INNER_WHILE_BODY, E_INNER_ENDWHILE, E_ENDWHILE ]
 
+LOAD a
+JZERO E_MOD_BORING_CASE
 LOAD b [ IF b > 0 GOTO IF_MOD_BODY ]  [ IF_MOD_BODY: b_copy := b; ] [ IF a < b GOTO E_MOD_WHILE2_BODY ]
 JPOS E_IF_MOD_BODY
-SET 0 [ p := 0; ]
-STOREI p
-JUMPI $ret
+E_MOD_BORING_CASE : SET 0 [ p := 0; ]
+JUMP E_MOD_END
+
 E_IF_MOD_BODY : STORE b_copy
 SUB a
 JPOS E_MOD_WHILE2_BODY
@@ -70,5 +73,7 @@ LOAD b_copy [ IF a >= b_copy GOTO E_MOD_WHILE2_BODY ]
 SUB a
 JZERO E_MOD_WHILE2_BODY
 LOAD a
-STOREI p
+
+
+E_MOD_END : STOREI p
 JUMPI $ret
