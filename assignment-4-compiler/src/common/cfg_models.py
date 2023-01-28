@@ -34,6 +34,9 @@ class OutEdge:
         self.arg1 = arg1
         self.arg2 = arg2
 
+    def outs(self) -> list[int]:
+        return list(filter(lambda x: x != -1, [self.if_true, self.if_false]))
+
     def __repr__(self):
         if self.if_false != -1:
             return f"OutEdge({self.if_true}, {self.if_false})"

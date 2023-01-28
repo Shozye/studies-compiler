@@ -3,6 +3,7 @@ from typing import Optional
 from ..common.cfg_models import VariableInfo
 from ..common.cfg_models import BasicBlock, OutEdge, ProceduralEdge
 from ..common.tac_models import Quadruple, TAC
+from collections import defaultdict
 
 
 def _get_leaders(tacs: list[Quadruple]) -> list[int]:
@@ -39,20 +40,31 @@ class CFG:
     edges: dict[int, OutEdge]  # edge is between two basic blocks id's
     outer_procedural_edges: list[tuple[int, str]]  # edge is between block_id and procedure_name
     symbols: dict[str, VariableInfo]
+    backtrack_edges: dict[int, list[int]]
+    name: str
 
-    def __init__(self, tacs: list[Quadruple], initialize=True):
+    def __init__(self, name: str, tacs: list[Quadruple], initialize=True):
         """ We make CFG by finding leaders of TAC, and then we create basic blocks by
         starting with leader and extending up to the next leader.
         @param tacs: list of tacs that start with proc_start and end with ReturnTAC
         """
+        self.name = name
         self.nodes = {}
         self.edges = {}
         self.outer_procedural_edges = []
         self.symbols = dict()
         self.flags = set()
+        self.backtrack_edges = defaultdict(list)
         if initialize:
             self._make_nodes(tacs)
             self._fill_edges()
+            self._fill_backtrack_edges()
+            print(self.backtrack_edges)
+
+    def _fill_backtrack_edges(self):
+        for start, out_edge in self.edges.items():
+            for endpoint in out_edge.outs():
+                self.backtrack_edges[endpoint].append(start)
 
     def _fill_edges(self):
         start_label_to_basic_block = {}
@@ -93,7 +105,7 @@ class ICFG:
             cfgs = {}
         self.cfgs = cfgs
         for proc_name, tac in tacs.items():
-            self.cfgs[proc_name] = CFG(tac)
+            self.cfgs[proc_name] = CFG(proc_name, tac)
         self.procedural_edges = self._make_procedural_edges()
 
     def _make_procedural_edges(self) -> list[ProceduralEdge]:
@@ -102,4 +114,3 @@ class ICFG:
             for out_edge in cfg.outer_procedural_edges:
                 proc_edges.append(ProceduralEdge(proc_name, *out_edge))
         return proc_edges
-

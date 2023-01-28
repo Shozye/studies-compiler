@@ -1,5 +1,6 @@
 import os
 
+from .assembler_optimiser.runner import optimise_assembler
 from .merger.runner import merge
 from .common.commands import write_commands_to_file
 from .control_flow_graph.runner import get_icfg
@@ -29,6 +30,7 @@ def compile_gebalang(text: str, filename: str, output_path: str, output_dir: str
     if verbose:
         write_icfg_to_file(icfg, f"{output_dir}/{filename}.bb.asm", False)
     " --- ASSEMBLER OPTIMISATION PART --- "
+    optimise_assembler(icfg)
 
     # " --- END PART "
     commands = merge(icfg)

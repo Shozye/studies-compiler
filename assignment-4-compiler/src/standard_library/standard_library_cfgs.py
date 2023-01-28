@@ -19,7 +19,7 @@ def get_commands(path: str) -> list[Command]:
 
 
 def get_mul(commands: list[Command]) -> CFG:
-    cfg = CFG([], False)
+    cfg = CFG("!mul", [], False)
     bb = BasicBlock(0, [ParamTAC("$ret"), ParamTAC("a"), ParamTAC("b"), ParamTAC("p"),
                         ReturnTAC()])
     bb.set_commands(commands)
@@ -35,7 +35,7 @@ def get_mul(commands: list[Command]) -> CFG:
 
 
 def get_div(commands: list[Command]) -> CFG:
-    cfg = CFG([], False)
+    cfg = CFG("!div", [], False)
     bb = BasicBlock(0, [ParamTAC("$ret"), ParamTAC("a"), ParamTAC("b"), ParamTAC("p"),
                         LocalTAC("temp"), LocalTAC("b_copy"), ReturnTAC()])
     bb.set_commands(commands)
@@ -52,7 +52,7 @@ def get_div(commands: list[Command]) -> CFG:
 
 
 def get_mod(commands: list[Command]) -> CFG:
-    cfg = CFG([], False)
+    cfg = CFG("!mod", [], False)
     bb = BasicBlock(0, [ParamTAC("$ret"), ParamTAC("a"), ParamTAC("b"), ParamTAC("p"),
                         LocalTAC("b_copy"), ReturnTAC()])
     bb.set_commands(commands)

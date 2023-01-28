@@ -12,21 +12,21 @@ BEGIN
 END
 
 PROGRAM IS
-VAR n,m,potega,dzielnik
+VAR n,m,exp,div
 BEGIN
     READ n;
-    dzielnik:=2;
-    m:=dzielnik*dzielnik;
+    div:=2;
+    m:=div*div;
     WHILE n>=m DO
-        check(n,dzielnik,potega);
-        IF potega>0 THEN [jest podzielna przez dzielnik]
-            WRITE dzielnik;
-            WRITE potega;
+        check(n,div,exp);
+        IF exp>0 THEN [jest podzielna przez div]
+            WRITE div;
+            WRITE exp;
         ENDIF
-        dzielnik:=dzielnik+1;
-        m:=dzielnik*dzielnik;
+        div:=div+1;
+        m:=div*div;
     ENDWHILE
-    IF n!=1 THEN [ostatni dzielnik różny od 1]
+    IF n!=1 THEN [ostatni div różny od 1]
         WRITE n;
         WRITE 1;
     ENDIF
