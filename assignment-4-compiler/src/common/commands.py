@@ -1,7 +1,6 @@
 def gen_load(with_i: bool):
     return LOADI if with_i else LOAD
 
-
 def gen_add(with_i: bool):
     return ADDI if with_i else ADD
 

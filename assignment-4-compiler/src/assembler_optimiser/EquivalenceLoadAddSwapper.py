@@ -12,7 +12,6 @@ class EquivalenceLoadAddSwapper:
         for proc_name, cfg in self.icfg.cfgs.items():
             if proc_name.startswith("!"):
                 continue
-            #print(proc_name)
             for bb in cfg.nodes.values():
                 self._swap_in_bb(bb)
 
@@ -25,8 +24,6 @@ class EquivalenceLoadAddSwapper:
             prev_command = command
         if not possible_load_swaps:
             return
-
-        #print(possible_load_swaps, bb.index)
 
         new_commands = []
         i = 0
