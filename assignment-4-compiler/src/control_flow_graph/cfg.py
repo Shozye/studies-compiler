@@ -38,7 +38,7 @@ class CFG:
     credits: https://www.researchgate.net/publication/273445077_Designing_and_Implementing_Control_Flow_Graph_for_Magic_4th_Generation_Language"""
     nodes: dict[int, BasicBlock]  # basic blocks with their indexes
     edges: dict[int, OutEdge]  # edge is between two basic blocks id's
-    outer_procedural_edges: list[tuple[int, str]]  # edge is between block_id and procedure_name
+    outer_procedural_edges: dict[int, str]  # edge is between block_id and procedure_name
     symbols: dict[str, VariableInfo]
     backtrack_edges: dict[int, list[int]]
     name: str
@@ -51,7 +51,7 @@ class CFG:
         self.name = name
         self.nodes = {}
         self.edges = {}
-        self.outer_procedural_edges = []
+        self.outer_procedural_edges = dict()
         self.symbols = dict()
         self.flags = set()
         self.backtrack_edges = defaultdict(list)
@@ -82,7 +82,7 @@ class CFG:
                 self.edges[i] = OutEdge(start_label_to_basic_block[last.res])
             elif last.type in [TAC.CALL, TAC.SCALL]:
                 self.edges[i] = OutEdge(i + 1)
-                self.outer_procedural_edges.append((i, last.arg1))
+                self.outer_procedural_edges[i] = last.arg1
             else:
                 self.edges[i] = OutEdge(i + 1)  # case when there was some loop
 
@@ -110,6 +110,6 @@ class ICFG:
     def _make_procedural_edges(self) -> list[ProceduralEdge]:
         proc_edges = []
         for proc_name, cfg in self.cfgs.items():
-            for out_edge in cfg.outer_procedural_edges:
-                proc_edges.append(ProceduralEdge(proc_name, *out_edge))
+            for bb_index, other_proc_name in cfg.outer_procedural_edges.items():
+                proc_edges.append(ProceduralEdge(proc_name, bb_index, other_proc_name))
         return proc_edges

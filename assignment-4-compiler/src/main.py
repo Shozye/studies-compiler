@@ -1,5 +1,6 @@
 import os
 
+from .cfg_optimiser.runner import optimise_icfg
 from .assembler_optimiser.runner import optimise_assembler
 from .merger.runner import merge
 from .common.commands import write_commands_to_file
@@ -19,10 +20,12 @@ def compile_gebalang(text: str, filename: str, output_path: str, output_dir: str
     validate(tac)
     " --- CONTROL Flow GRAPH PART --- "
     icfg = get_icfg(tac)
+    " --- ICFG OPTIMISATION PART "
+    optimise_icfg(icfg)
+
     if verbose:
         write_icfg_to_file(icfg, f"{output_dir}/{filename}.bb.tac")
         plot_icfg(icfg, f"{output_dir}/{filename}_cfg.png")
-    " --- ICFG OPTIMISATION PART "
 
     " --- TRANSLATION PART "
 
