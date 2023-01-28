@@ -31,8 +31,6 @@ void run_machine( vector< pair<int,long long> > & program )
   int lr;
 
   long long t, io;
-
-  cout << cBlue << "Uruchamianie programu." << cReset << endl;
   lr = 0;
   t = 0;
   io = 0;
@@ -45,7 +43,7 @@ void run_machine( vector< pair<int,long long> > & program )
      }
      switch( program[lr].first )
      {
-      case GET:	cout << "? "; cin >> p[program[lr].second]; io+=100; t+=100; lr++; break;
+      case GET: cin >> p[program[lr].second]; io+=100; t+=100; lr++; break;
       case PUT:	cout << "> " << p[program[lr].second] << endl; io+=100; t+=100; lr++; break;
 
       case LOAD:	p[0] = p[program[lr].second]; t+=10; lr++; break;
@@ -73,5 +71,5 @@ void run_machine( vector< pair<int,long long> > & program )
     }
   }
   cout.imbue(std::locale(""));
-  cout << cBlue << "Skończono program (koszt: " << cRed << t << cBlue << "; w tym i/o: " << io << ")." << cReset << endl;
+  cout << cBlue << "Skończono program (koszt: " << cRed << t << cBlue << "; w tym i/o: " << io << ")." << cReset << program.size() << endl;
 }
