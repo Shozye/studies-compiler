@@ -9,7 +9,7 @@ class ProcedureInliner:
 
     def inline(self):
         to_inline = self._get_procedures_to_inline()
-        print(to_inline)
+        #print(to_inline)
 
     def _get_procedures_to_inline(self) -> list[str]:
         frequencies = defaultdict(int)

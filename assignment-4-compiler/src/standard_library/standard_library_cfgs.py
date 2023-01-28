@@ -71,6 +71,6 @@ def get_standard_library() -> dict[str, CFG]:
     static_path = os.path.join(os.path.dirname(__file__), "static")
     return {
         "!mul": get_mul(get_commands(os.path.join(static_path, "mul.imp"))),
-        "!div": get_div(get_commands(os.path.join(static_path, "new_div_2.imp"))),
+        "!div": get_div(get_commands(os.path.join(static_path, "new_div_3.imp"))),
         "!mod": get_mod(get_commands(os.path.join(static_path, "new_mod2.imp")))
     }

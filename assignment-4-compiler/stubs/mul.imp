@@ -33,14 +33,7 @@ ASSEMBLER z etykietami
 2 - a
 3 - b
 4 - p
-5 - a_copy
-6 - b_copy
-Etykiety: E_ENDWHILE, E_ENDIF, E_WHILE_BODY]
 
-LOAD a [ Podmienienie na kopie ]
-STORE a_copy
-LOAD b
-STORE b_copy
 SET 0 [ Ustawienie p na 0 ]
 STORE p
 LOAD b_copy

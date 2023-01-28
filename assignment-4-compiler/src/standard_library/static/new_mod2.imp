@@ -9,6 +9,8 @@ SUB a
 JPOS E_MOD_A_END
 E_MOD_WHILE1_BODY : LOAD b [ b *= 2 ] [ IF a >= b GOTO E_MOD_WHILE1_BODY ]
 ADD *storage_0*
+ADD *storage_0*
+ADD *storage_0*
 STORE b
 SUB a
 JZERO E_MOD_WHILE1_BODY
