@@ -9,8 +9,5 @@ Laboratories end with `Compiler` project.
 Currently there is:
 #### Assignment 1: Implementing KMP and Finite Automate Algorithms 
 #### Assignment 2: Working with Flex, Postfix Calculator using Flex
-#### Assignment 3:
-#### Assignment 4:
-#### Assignment 5:
-### Exercises
-These are exercises lists to provide math solutions or proofs on the blackboard of a certain facts. 
+#### Assignment 3: Calculator in G_p{1234567} using Flex in Python and C++
+#### Assignment 4: Compiler for simple imperative language
